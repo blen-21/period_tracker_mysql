@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloomCycle Signup</title>
+  <style>
+    :root {
+      --primary: #e83f8e;
+      --primary-light: #ff8fab;
+      --primary-lighter: #ffc2d1;
+      --secondary: #9c4668;
+      --light: #fff9fb;
+      --white: #ffffff;
+      --text: #3a2e37;
+      --bloom: linear-gradient(135deg, #e83f8e, #ff8fab);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--light); display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .card {
+      background-color: var(--white);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(232,63,142,0.1);
+      width: 350px;
+      text-align: center;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      background: var(--bloom);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+    }
+    h1 { color: var(--primary); margin-bottom: 20px; }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid var(--primary-lighter);
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    input:focus { border-color: var(--primary); outline: none; }
+    button {
+      width: 100%;
+      padding: 15px;
+      background: var(--bloom);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s;
+    }
+    button:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(232,63,142,0.3); }
+    .login-link { margin-top: 15px; font-size: 0.9rem; }
+    .login-link a { color: var(--primary); text-decoration: none; }
+    .login-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">BloomCycle</div>
+    <h1>Create Your Account</h1>
+    <form id="signup" action="/signup" method="POST">
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Sign Up</button>
+    </form>
+    <div class="login-link">
+      Already have an account? <a href="/login">Log In</a>
+    </div>
+  </div>
+</body>
+</html>
