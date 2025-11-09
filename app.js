@@ -1,10 +1,12 @@
 const express = require('express');
 const path = require('path');
 const mysql = require('mysql2');
+const session = require('express-session');
+
 const app = express();
 const port = 3000;
 
-// Set EJS as the template engine
+// Set EJS as template engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -12,24 +14,30 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Setup sessions
+app.use(session({
+  secret: 'mysecretkey',        // change to a secure string for production
+  resave: false,
+  saveUninitialized: false
+}));
+
 // MySQL connection
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Pupil162123!', // ✅ Your actual password
-  multipleStatements: true   // ✅ Allows multiple queries in one call
+  password: 'Pupil162123!',
+  multipleStatements: true
 });
 
 // Connect to MySQL
 db.connect((err) => {
   if (err) {
     console.error('❌ Database connection failed: ' + err.message);
-    console.log('Please check your MySQL credentials and make sure MySQL is running');
     process.exit(1);
   }
   console.log('✅ Connected to MySQL database as id ' + db.threadId);
 
-  // Create database + tables
+  // Initialize database
   initializeDatabase();
 });
 
@@ -60,7 +68,6 @@ function initializeDatabase() {
       FOREIGN KEY (user_id) REFERENCES users(id)
     );
   `;
-
   db.query(setupQueries, (err) => {
     if (err) throw err;
     console.log('✅ Database and tables ready');
@@ -74,11 +81,11 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
-// Login page
-app.get('/login', (req, res) => res.render('login'));
-
 // Signup page
 app.get('/signup', (req, res) => res.render('signup'));
+
+// Login page
+app.get('/login', (req, res) => res.render('login'));
 
 // Handle signup
 app.post('/signup', (req, res) => {
@@ -118,6 +125,8 @@ app.post('/login', (req, res) => {
       if (err) return res.status(500).send('Database error');
 
       if (results.length > 0) {
+        // Store user in session
+        req.session.user = results[0];
         res.redirect('/dashboard');
       } else {
         res.send('Invalid email or password');
@@ -126,11 +135,45 @@ app.post('/login', (req, res) => {
   });
 });
 
-// Dashboard
+// Dashboard (requires login)
 app.get('/dashboard', (req, res) => {
-  res.render('dashboard', { user: { name: 'User' } });
+  if (!req.session.user) return res.redirect('/login'); // redirect if not logged in
+  res.render('dashboard', { username: req.session.user.name });
 });
 
+// Logout route
+app.get('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) return res.status(500).send('Error logging out');
+    res.redirect('/login');
+  });
+});
+// Add these routes to your app.js
+
+// Handle cycle data saving
+app.post('/api/cycles', (req, res) => {
+  if (!req.session.user) return res.status(401).json({ success: false, message: 'Not logged in' });
+
+  const { start_date, end_date, cycle_length, symptoms, mood, notes } = req.body;
+
+  db.query('USE abeba_db;', (err) => {
+    if (err) return res.status(500).json({ success: false, message: 'Database selection failed' });
+
+    const query = 'INSERT INTO cycles (user_id, start_date, end_date, cycle_length, symptoms, mood, notes) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.query(query, [req.session.user.id, start_date, end_date, cycle_length, symptoms, mood, notes], (err, results) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ success: false, message: 'Error saving cycle data' });
+      }
+
+      res.json({ 
+        success: true, 
+        message: 'Cycle data saved successfully',
+        data: { id: results.insertId }
+      });
+    });
+  });
+});
 // Start server
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
