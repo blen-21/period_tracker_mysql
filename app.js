@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const mysql = require('mysql2');
 const session = require('express-session');
+require('dotenv').config();
+
 
 const app = express();
 const port = 3000;
@@ -25,7 +27,7 @@ app.use(session({
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Pupil162123!',
+  password: process.env.DB_Pass,
   multipleStatements: true
 });
 
