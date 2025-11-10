@@ -50,12 +50,14 @@ function initializeDatabase() {
     USE abeba_db;
 
     CREATE TABLE IF NOT EXISTS users (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      email VARCHAR(255) UNIQUE NOT NULL,
-      password VARCHAR(255) NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(191) NOT NULL UNIQUE,
+  password VARCHAR(60) NOT NULL,
+  role ENUM('user', 'doctor', 'admin') DEFAULT 'user',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
     CREATE TABLE IF NOT EXISTS cycles (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -69,7 +71,29 @@ function initializeDatabase() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id)
     );
+    CREATE TABLE IF NOT EXISTS posts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  question TEXT NOT NULL,
+  asked_by INT NOT NULL,
+  answer TEXT DEFAULT NULL,
+  answered_by INT DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  answered_at TIMESTAMP NULL DEFAULT NULL,
+  likes INT DEFAULT 0,
+  FOREIGN KEY (asked_by) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (answered_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS user_surveys (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  responses JSON NOT NULL,
+  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
   `;
+  
   db.query(setupQueries, (err) => {
     if (err) throw err;
     console.log('✅ Database and tables ready');
@@ -88,7 +112,7 @@ app.get('/signup', (req, res) => res.render('signup'));
 
 // Login page
 app.get('/login', (req, res) => res.render('login'));
-
+app.get('/questionnaire', (req, res) => res.render('questionnaire'));
 // Handle signup
 app.post('/signup', (req, res) => {
   const { name, email, password } = req.body;
@@ -109,7 +133,11 @@ app.post('/signup', (req, res) => {
         if (err) return res.status(500).send('Error creating user');
 
         console.log('✅ User created with ID:', results.insertId);
-        res.redirect('/login');
+
+        // ✅ Set session for the new user
+        req.session.userId = results.insertId;
+
+        res.redirect('/questionnaire');
       });
     });
   });
@@ -150,7 +178,26 @@ app.get('/logout', (req, res) => {
     res.redirect('/login');
   });
 });
-// Add these routes to your app.js
+app.post('/save-survey', (req, res) => {
+    const userId = req.session.userId;
+
+    if (!userId) {
+        return res.status(401).json({ success: false, message: 'User not logged in' });
+    }
+
+    const questionnaire = JSON.stringify(req.body); 
+
+    const query = 'UPDATE users SET questionnaire = ? WHERE id = ?';
+    db.query(query, [questionnaire, userId], (err, result) => {
+        if (err) {
+            console.error('Error saving questionnaire:', err);
+            return res.status(500).json({ success: false, message: 'Database error' });
+        }
+
+        res.json({ success: true });
+    });
+});
+
 
 // Handle cycle data saving
 app.post('/api/cycles', (req, res) => {

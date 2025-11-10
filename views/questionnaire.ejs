@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloomCycle - Health Questionnaire</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e83f8e;
+            --primary-light: #ff8fab;
+            --primary-lighter: #ffc2d1;
+            --secondary: #9c4668;
+            --light: #fff9fb;
+            --white: #ffffff;
+            --text: #3a2e37;
+            --bloom: linear-gradient(135deg, #e83f8e, #ff8fab);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: var(--bloom);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .card h1 {
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .intro-text {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .question-group {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--primary-lighter);
+        }
+
+        .question-group:last-of-type {
+            border-bottom: none;
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-title i {
+            color: var(--primary);
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .option {
+            padding: 18px 20px;
+            border: 2px solid var(--primary-lighter);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--primary-light);
+            background-color: rgba(255, 194, 209, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .option.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(232, 63, 142, 0.3);
+        }
+
+        .option-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 18px;
+            border: 2px solid var(--primary-lighter);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--primary-light);
+            background-color: rgba(255, 194, 209, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .checkbox-item.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(232, 63, 142, 0.3);
+        }
+
+        .checkbox-item input {
+            display: none;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .checkbox-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-light);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item.selected .checkbox-icon {
+            background-color: white;
+            border-color: white;
+        }
+
+        .checkbox-item.selected .checkbox-icon i {
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid var(--primary-lighter);
+        }
+
+        .btn {
+            background: var(--bloom);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(232, 63, 142, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(232, 63, 142, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .completion-message {
+            text-align: center;
+            padding: 60px 20px;
+            display: none;
+        }
+
+        .completion-message i {
+            font-size: 5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .completion-message h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+        }
+
+        .completion-message p {
+            color: var(--secondary);
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary-lighter);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background-color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .required-note {
+            text-align: center;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        /* Number Inputs */
+        input[type="number"] {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px 20px;
+            border: 2px solid var(--primary-lighter);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(232, 63, 142, 0.1);
+        }
+
+        input[type="number"]:hover {
+            border-color: var(--primary-light);
+        }
+
+        input[type="number"]::placeholder {
+            color: var(--primary-light);
+        }
+
+        /* Dropdowns */
+        select {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px 20px;
+            border: 2px solid var(--primary-lighter);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: white;
+            color: var(--text);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23e83f8e' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+            padding-right: 40px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(232, 63, 142, 0.1);
+        }
+
+        select:hover {
+            border-color: var(--primary-light);
+        }
+
+        .input-hint {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 25px;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .option {
+                padding: 15px 18px;
+            }
+            
+            input[type="number"], select {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.2rem;
+            }
+            
+            .logo i {
+                font-size: 2rem;
+            }
+            
+            .card h1 {
+                font-size: 1.5rem;
+            }
+            
+            .question-title {
+                font-size: 1.2rem;
+            }
+            
+            .btn {
+                padding: 16px 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-venus"></i>
+                BloomCycle
+            </div>
+            <div class="tagline">Track your cycle, understand your body</div>
+        </header>
+
+        <div class="card">
+            <h1>Health & Cycle Questionnaire</h1>
+            
+            <div class="intro-text">
+                <p>Help us understand your health profile to personalize your BloomCycle experience.</p>
+                <p>All questions are optional, but the more you share, the better we can assist you.</p>
+            </div>
+            
+            <div class="required-note">
+                <i class="fas fa-info-circle"></i> All questions are optional
+            </div>
+            
+            <div class="progress-indicator">
+                <div class="progress-dot active"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+            </div>
+            
+            <form id="health-questionnaire">
+                <!-- Age Range Question -->
+                <div class="question-group" data-question="ageRange">
+                    <h2 class="question-title"><i class="fas fa-user"></i> What is your age range?</h2>
+                    <div class="options">
+                        <div class="option" data-value="under-18">
+                            <div class="option-icon"><i class="fas fa-child"></i></div>
+                            Under 18
+                        </div>
+                        <div class="option" data-value="18-24">
+                            <div class="option-icon"><i class="fas fa-user-graduate"></i></div>
+                            18-24 years
+                        </div>
+                        <div class="option" data-value="25-34">
+                            <div class="option-icon"><i class="fas fa-user"></i></div>
+                            25-34 years
+                        </div>
+                        <div class="option" data-value="35-44">
+                            <div class="option-icon"><i class="fas fa-user-tie"></i></div>
+                            35-44 years
+                        </div>
+                        <div class="option" data-value="45-54">
+                            <div class="option-icon"><i class="fas fa-user-md"></i></div>
+                            45-54 years
+                        </div>
+                        <div class="option" data-value="55-plus">
+                            <div class="option-icon"><i class="fas fa-user-friends"></i></div>
+                            55+ years
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cycle Regularity -->
+                <div class="question-group" data-question="cycleRegularity">
+                    <h2 class="question-title"><i class="fas fa-calendar-alt"></i> How would you describe your cycle regularity?</h2>
+                    <div class="options">
+                        <div class="option" data-value="regular">
+                            <div class="option-icon"><i class="fas fa-clock"></i></div>
+                            Very regular (like clockwork)
+                        </div>
+                        <div class="option" data-value="somewhat-regular">
+                            <div class="option-icon"><i class="fas fa-calendar-week"></i></div>
+                            Somewhat regular
+                        </div>
+                        <div class="option" data-value="irregular">
+                            <div class="option-icon"><i class="fas fa-random"></i></div>
+                            Irregular
+                        </div>
+                        <div class="option" data-value="not-sure">
+                            <div class="option-icon"><i class="fas fa-question-circle"></i></div>
+                            I'm not sure yet
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cycle Length Options -->
+                <div class="question-group" data-question="cycleLength">
+                    <h2 class="question-title"><i class="fas fa-ruler"></i> How long is your typical cycle?</h2>
+                    <div class="options">
+                        <div class="option" data-value="less-25">
+                            <div class="option-icon"><i class="fas fa-calendar-minus"></i></div>
+                            Less than 25 days
+                        </div>
+                        <div class="option" data-value="25-30">
+                            <div class="option-icon"><i class="fas fa-calendar-week"></i></div>
+                            25-30 days
+                        </div>
+                        <div class="option" data-value="31-35">
+                            <div class="option-icon"><i class="fas fa-calendar"></i></div>
+                            31-35 days
+                        </div>
+                        <div class="option" data-value="more-35">
+                            <div class="option-icon"><i class="fas fa-calendar-plus"></i></div>
+                            More than 35 days
+                        </div>
+                        <div class="option" data-value="varies">
+                            <div class="option-icon"><i class="fas fa-exchange-alt"></i></div>
+                            It varies a lot
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Average Cycle Length Input -->
+                <div class="question-group" data-question="averageCycleLength">
+                    <h2 class="question-title"><i class="fas fa-calendar-alt"></i> What is your average cycle length? (in days)</h2>
+                    <div class="input-group">
+                        <input type="number" name="averageCycleLength" min="15" max="60" placeholder="e.g., 28">
+                        <div class="input-hint">Enter a number between 15 and 60 days</div>
+                    </div>
+                </div>
+
+                <!-- Period Duration -->
+                <div class="question-group" data-question="periodDuration">
+                    <h2 class="question-title"><i class="fas fa-hourglass-half"></i> How long does your period usually last? (in days)</h2>
+                    <div class="input-group">
+                        <input type="number" name="periodDuration" min="1" max="14" placeholder="e.g., 5">
+                        <div class="input-hint">Enter a number between 1 and 14 days</div>
+                    </div>
+                </div>
+
+                <!-- Irregular Frequency -->
+                <div class="question-group" data-question="irregularFrequency">
+                    <h2 class="question-title"><i class="fas fa-exclamation-triangle"></i> How often do you experience irregular cycles?</h2>
+                    <div class="input-group">
+                        <select name="irregularFrequency">
+                            <option value="">Select an option</option>
+                            <option value="never">Never</option>
+                            <option value="rarely">Rarely</option>
+                            <option value="sometimes">Sometimes</option>
+                            <option value="often">Often</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stress Level -->
+                <div class="question-group" data-question="stressLevel">
+                    <h2 class="question-title"><i class="fas fa-brain"></i> How stressed do you usually feel?</h2>
+                    <div class="input-group">
+                        <select name="stressLevel">
+                            <option value="">Select an option</option>
+                            <option value="low">Low</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Mood Swings -->
+                <div class="question-group" data-question="moodSwings">
+                    <h2 class="question-title"><i class="fas fa-smile"></i> Do you experience mood swings unrelated to periods?</h2>
+                    <div class="input-group">
+                        <select name="moodSwings">
+                            <option value="">Select an option</option>
+                            <option value="no">No</option>
+                            <option value="occasionally">Occasionally</option>
+                            <option value="frequently">Frequently</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Symptoms -->
+                <div class="question-group" data-question="symptoms">
+                    <h2 class="question-title"><i class="fas fa-stethoscope"></i> What symptoms do you typically experience? (Select all that apply)</h2>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item" data-value="cramps">
+                            <input type="checkbox" id="cramps" name="symptoms" value="cramps">
+                            <label for="cramps">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Cramps
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="headache">
+                            <input type="checkbox" id="headache" name="symptoms" value="headache">
+                            <label for="headache">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Headaches
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="bloating">
+                            <input type="checkbox" id="bloating" name="symptoms" value="bloating">
+                            <label for="bloating">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Bloating
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="mood-swings">
+                            <input type="checkbox" id="mood-swings" name="symptoms" value="mood-swings">
+                            <label for="mood-swings">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Mood swings
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="fatigue">
+                            <input type="checkbox" id="fatigue" name="symptoms" value="fatigue">
+                            <label for="fatigue">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Fatigue
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="back-pain">
+                            <input type="checkbox" id="back-pain" name="symptoms" value="back-pain">
+                            <label for="back-pain">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Back pain
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="breast-tenderness">
+                            <input type="checkbox" id="breast-tenderness" name="symptoms" value="breast-tenderness">
+                            <label for="breast-tenderness">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Breast tenderness
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="acne">
+                            <input type="checkbox" id="acne" name="symptoms" value="acne">
+                            <label for="acne">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Acne
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="food-cravings">
+                            <input type="checkbox" id="food-cravings" name="symptoms" value="food-cravings">
+                            <label for="food-cravings">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Food cravings
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="none-symptoms">
+                            <input type="checkbox" id="none-symptoms" name="symptoms" value="none">
+                            <label for="none-symptoms">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                None
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Conditions -->
+                <div class="question-group" data-question="conditions">
+                    <h2 class="question-title"><i class="fas fa-heartbeat"></i> Do you have any of these health conditions? (Select all that apply)</h2>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item" data-value="pcos">
+                            <input type="checkbox" id="pcos" name="conditions" value="pcos">
+                            <label for="pcos">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                PCOS
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="endometriosis">
+                            <input type="checkbox" id="endometriosis" name="conditions" value="endometriosis">
+                            <label for="endometriosis">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Endometriosis
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="fibroids">
+                            <input type="checkbox" id="fibroids" name="conditions" value="fibroids">
+                            <label for="fibroids">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Fibroids
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="thyroid">
+                            <input type="checkbox" id="thyroid" name="conditions" value="thyroid">
+                            <label for="thyroid">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Thyroid issues
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="anemia">
+                            <input type="checkbox" id="anemia" name="conditions" value="anemia">
+                            <label for="anemia">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                Anemia
+                            </label>
+                        </div>
+                        <div class="checkbox-item" data-value="none-conditions">
+                            <input type="checkbox" id="none-conditions" name="conditions" value="none">
+                            <label for="none-conditions">
+                                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                                None of these
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Section -->
+                <div class="submit-section">
+                    <button type="submit" class="btn" id="submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Questionnaire
+                    </button>
+                </div>
+            </form>
+
+            <!-- Completion Message -->
+            <div class="completion-message" id="completion-message">
+                <i class="fas fa-check-circle"></i>
+                <h2>Thank You!</h2>
+                <p>Your responses have been successfully submitted. We're now personalizing your BloomCycle experience based on your health profile.</p>
+                <button class="btn" id="dashboard-btn">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Go to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('health-questionnaire');
+            const submitBtn = document.getElementById('submit-btn');
+            const completionMessage = document.getElementById('completion-message');
+            const dashboardBtn = document.getElementById('dashboard-btn');
+            const progressDots = document.querySelectorAll('.progress-dot');
+            
+            // Initialize form data structure
+            let formData = {
+                ageRange: null,
+                cycleRegularity: null,
+                cycleLength: null,
+                averageCycleLength: null,
+                periodDuration: null,
+                irregularFrequency: null,
+                stressLevel: null,
+                moodSwings: null,
+                symptoms: [],
+                conditions: []
+            };
+            
+            // Option selection for single-choice questions
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const parentQuestion = this.closest('.question-group');
+                    const questionType = parentQuestion.getAttribute('data-question');
+                    
+                    // Deselect all other options in the same question
+                    parentQuestion.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Select this option
+                    this.classList.add('selected');
+                    
+                    // Store the selected value
+                    formData[questionType] = this.getAttribute('data-value');
+                    
+                    updateProgressIndicator();
+                    console.log('Form data updated:', formData);
+                });
+            });
+            
+            // Handle number input changes
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('input', function() {
+                    const name = this.getAttribute('name');
+                    const value = this.value.trim();
+                    
+                    if (name === 'averageCycleLength') {
+                        formData.averageCycleLength = value ? parseInt(value) : null;
+                    } else if (name === 'periodDuration') {
+                        formData.periodDuration = value ? parseInt(value) : null;
+                    }
+                    
+                    updateProgressIndicator();
+                    console.log(`${name} updated:`, formData[name]);
+                });
+            });
+            
+            // Handle select changes
+            document.querySelectorAll('select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const name = this.getAttribute('name');
+                    const value = this.value;
+                    
+                    if (name === 'irregularFrequency') {
+                        formData.irregularFrequency = value || null;
+                    } else if (name === 'stressLevel') {
+                        formData.stressLevel = value || null;
+                    } else if (name === 'moodSwings') {
+                        formData.moodSwings = value || null;
+                    }
+                    
+                    updateProgressIndicator();
+                    console.log(`${name} updated:`, value);
+                });
+            });
+            
+            // Checkbox selection for multi-choice questions - FIXED
+            document.querySelectorAll('.checkbox-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    const parentQuestion = this.closest('.question-group');
+                    const questionType = parentQuestion.getAttribute('data-question');
+                    const value = this.getAttribute('data-value');
+                    
+                    // Toggle selection
+                    this.classList.toggle('selected');
+                    checkbox.checked = !checkbox.checked;
+                    
+                    // Initialize array if it doesn't exist
+                    if (!formData[questionType]) {
+                        formData[questionType] = [];
+                    }
+                    
+                    let targetArray = formData[questionType];
+                    
+                    // Handle "none" options exclusively
+                    if (value.includes('none')) {
+                        if (checkbox.checked) {
+                            // If "none" is selected, deselect all others and set array to ["none"]
+                            const allCheckboxes = parentQuestion.querySelectorAll('.checkbox-item');
+                            allCheckboxes.forEach(cb => {
+                                if (cb !== this) {
+                                    cb.classList.remove('selected');
+                                    cb.querySelector('input[type="checkbox"]').checked = false;
+                                }
+                            });
+                            targetArray.length = 0;
+                            targetArray.push('none');
+                        } else {
+                            targetArray.length = 0;
+                        }
+                    } else {
+                        // For non-"none" options
+                        if (checkbox.checked) {
+                            // Remove "none" if it was selected
+                            const noneCheckbox = parentQuestion.querySelector('[data-value*="none"]');
+                            if (noneCheckbox && noneCheckbox.classList.contains('selected')) {
+                                noneCheckbox.classList.remove('selected');
+                                noneCheckbox.querySelector('input[type="checkbox"]').checked = false;
+                                targetArray.length = 0;
+                            }
+                            
+                            // Add to array if not already present
+                            if (!targetArray.includes(value)) {
+                                targetArray.push(value);
+                            }
+                        } else {
+                            // Remove from array
+                            const index = targetArray.indexOf(value);
+                            if (index > -1) {
+                                targetArray.splice(index, 1);
+                            }
+                        }
+                    }
+                    
+                    updateProgressIndicator();
+                    console.log('Form data updated:', formData);
+                });
+            });
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitQuestionnaire();
+            });
+            
+            // Dashboard button
+            dashboardBtn.addEventListener('click', function() {
+                window.location.href = '/dashboard';
+            });
+            
+            // Update progress indicator
+            function updateProgressIndicator() {
+                let answeredCount = 0;
+                const answers = formData;
+                
+                // Count answered questions
+                const questions = [
+                    'ageRange', 'cycleRegularity', 'cycleLength', 'averageCycleLength',
+                    'periodDuration', 'irregularFrequency', 'stressLevel', 'moodSwings',
+                    'symptoms', 'conditions'
+                ];
+                
+                questions.forEach(question => {
+                    if (Array.isArray(answers[question])) {
+                        if (answers[question].length > 0) answeredCount++;
+                    } else if (answers[question] !== null && answers[question] !== undefined && answers[question] !== '') {
+                        answeredCount++;
+                    }
+                });
+                
+                progressDots.forEach((dot, index) => {
+                    if (index < answeredCount) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Submit questionnaire
+            async function submitQuestionnaire() {
+                try {
+                    console.log('Submitting form data:', JSON.stringify(formData, null, 2));
+                    
+                    // Show loading state
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                    submitBtn.disabled = true;
+                    
+                    // Send data to backend
+                    const response = await fetch('/save-survey', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('Server response:', result);
+                    
+                    // Show completion message
+                    form.style.display = 'none';
+                    completionMessage.style.display = 'block';
+                    
+                } catch (error) {
+                    console.error('Error submitting questionnaire:', error);
+                    alert('There was an error submitting your questionnaire. Please try again.');
+                    
+                    // Reset submit button
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Questionnaire';
+                    submitBtn.disabled = false;
+                }
+            }
+
+            // Debug function to check data structure
+            window.debugFormData = function() {
+                console.log('Current form data:', JSON.stringify(formData, null, 2));
+                return formData;
+            }
+        });
+    </script>
+</body>
+</html>
