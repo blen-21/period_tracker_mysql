@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IVF Due Date Calculator | BloomCycle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e83f8e;
+            --primary-light: #ff8fab;
+            --primary-lighter: #ffc2d1;
+            --secondary: #9c4668;
+            --light: #fff9fb;
+            --white: #ffffff;
+            --text: #3a2e37;
+            --bloom: linear-gradient(135deg, #e83f8e, #ff8fab);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 15px 35px rgba(232, 63, 142, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        nav {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--bloom);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo i {
+            font-size: 1.6rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background-color: var(--primary-lighter);
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: var(--bloom);
+            color: var(--white);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path fill="white" d="M30,30 Q50,10 70,30 T90,50 T70,70 T50,90 T30,70 T10,50 T30,30 Z"/></svg>');
+            background-size: 200px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+            position: relative;
+        }
+
+        .calculator {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            border: 1px solid var(--primary-lighter);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculator::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--bloom);
+        }
+
+        .calculator h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--primary-lighter);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: var(--light);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(232, 63, 142, 0.2);
+        }
+
+        .cycle-length-note {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        button {
+            background: var(--bloom);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(232, 63, 142, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(232, 63, 142, 0.4);
+        }
+
+        .result {
+            background-color: var(--primary-lighter);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            display: none;
+            border-left: 4px solid var(--primary);
+        }
+
+        .result h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 15px 0;
+            text-align: center;
+            background: var(--white);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .pregnancy-info {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            flex: 1;
+            min-width: 150px;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--primary-light);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            margin-top: 5px;
+        }
+
+        .trimester-breakdown {
+            margin-top: 25px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .trimester {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--primary-lighter);
+        }
+
+        .trimester:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .trimester h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trimester-dates {
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .interpretation {
+            margin-top: 15px;
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .info-section {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--primary-lighter);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--bloom);
+        }
+
+        .info-section h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--primary-lighter);
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+
+        .info-section h3 {
+            color: var(--primary);
+            margin: 20px 0 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-section p {
+            margin-bottom: 15px;
+        }
+
+        .info-section ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-section li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--primary-lighter);
+        }
+
+        th {
+            background-color: var(--primary-lighter);
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--light);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--primary-lighter);
+        }
+
+        .heart {
+            color: var(--primary);
+        }
+
+        .ivf-details {
+            background-color: var(--primary-lighter);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .pregnancy-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-venus"></i>
+                BloomCycle
+            </div>
+            <div class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Home</a>
+                <a href="/calculators"><i class="fas fa-calculator"></i> Calculators</a>
+                <a href="/dashboard"><i class="fas fa-user"></i> My Account</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <h1>IVF Due Date Calculator</h1>
+            <p class="subtitle">Calculate your estimated due date specifically for IVF pregnancies</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="calculator">
+            <h2><i class="fas fa-baby"></i> Calculate Your IVF Due Date</h2>
+            
+            <form id="ivf-form">
+                <!-- IVF Transfer Details -->
+                <div class="form-group">
+                    <label for="transfer-date"><i class="fas fa-calendar-alt"></i> IVF Transfer Date</label>
+                    <input type="date" id="transfer-date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="transfer-type"><i class="fas fa-vial"></i> Embryo Transfer Type</label>
+                    <select id="transfer-type" required>
+                        <option value="3day">3-Day Transfer (Cleavage Stage)</option>
+                        <option value="5day">5-Day Transfer (Blastocyst Stage)</option>
+                        <option value="frozen">Frozen Embryo Transfer (FET)</option>
+                        <option value="donor">Donor Egg Transfer</option>
+                    </select>
+                </div>
+                
+                <!-- Additional IVF-specific information -->
+                <div class="form-group">
+                    <label for="embryo-age"><i class="fas fa-clock"></i> Embryo Age at Transfer (days)</label>
+                    <input type="number" id="embryo-age" min="2" max="6" value="5" required>
+                    <p class="cycle-length-note">Typically 3 days for cleavage stage, 5 days for blastocyst</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pregnancy-confirmed"><i class="fas fa-check-circle"></i> Pregnancy Confirmed?</label>
+                    <select id="pregnancy-confirmed">
+                        <option value="yes">Yes, with positive test</option>
+                        <option value="beta">Yes, with beta HCG test</option>
+                        <option value="ultrasound">Yes, with ultrasound confirmation</option>
+                        <option value="no">Not yet confirmed</option>
+                    </select>
+                </div>
+                
+                <button type="submit">
+                    <i class="fas fa-calculator"></i> Calculate IVF Due Date
+                </button>
+            </form>
+            
+            <div class="result" id="result">
+                <h3><i class="fas fa-chart-line"></i> Your IVF Pregnancy Timeline</h3>
+                <div class="result-value" id="due-date"></div>
+                
+                <div class="ivf-details">
+                    <h4><i class="fas fa-microscope"></i> IVF-Specific Calculation</h4>
+                    <p>Your due date is calculated based on your embryo transfer date and embryo development stage at transfer.</p>
+                    <p id="calculation-method"></p>
+                </div>
+                
+                <div class="pregnancy-info">
+                    <div class="info-box">
+                        <h4><i class="fas fa-calendar-week"></i> Weeks Pregnant</h4>
+                        <div class="info-value" id="weeks-pregnant"></div>
+                        <div class="info-label" id="days-pregnant"></div>
+                    </div>
+                    <div class="info-box">
+                        <h4><i class="fas fa-baby"></i> Trimester</h4>
+                        <div class="info-value" id="trimester"></div>
+                        <div class="info-label" id="trimester-progress"></div>
+                    </div>
+                    <div class="info-box">
+                        <h4><i class="fas fa-hourglass-half"></i> Days to Go</h4>
+                        <div class="info-value" id="days-to-go"></div>
+                        <div class="info-label">Until due date</div>
+                    </div>
+                </div>
+                
+                <div class="trimester-breakdown">
+                    <h4><i class="fas fa-chart-bar"></i> Pregnancy Trimesters</h4>
+                    <div class="trimester">
+                        <h4><i class="fas fa-seedling"></i> First Trimester</h4>
+                        <div class="trimester-dates" id="first-trimester"></div>
+                        <p>Weeks 1-13: Embryo implantation, organ formation, highest risk period</p>
+                    </div>
+                    <div class="trimester">
+                        <h4><i class="fas fa-leaf"></i> Second Trimester</h4>
+                        <div class="trimester-dates" id="second-trimester"></div>
+                        <p>Weeks 14-27: Growth, movement, anatomy scan, lower risk</p>
+                    </div>
+                    <div class="trimester">
+                        <h4><i class="fas fa-baby-carriage"></i> Third Trimester</h4>
+                        <div class="trimester-dates" id="third-trimester"></div>
+                        <p>Weeks 28-40: Final growth, preparation for birth</p>
+                    </div>
+                </div>
+                
+                <div class="interpretation">
+                    <h4><i class="fas fa-info-circle"></i> About IVF Due Dates</h4>
+                    <p>IVF due dates are more accurate than traditional calculations because we know the exact conception date.</p>
+                    <p>Your due date is an estimate - only about 5% of babies are born on their exact due date. Most IVF pregnancies deliver between 37-42 weeks.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="info-section">
+            <h2><i class="fas fa-book-medical"></i> Understanding IVF Pregnancy</h2>
+            
+            <h3><i class="fas fa-calculator"></i> How IVF Due Dates Are Calculated</h3>
+            <p>IVF due dates are calculated differently from natural pregnancies because we know the exact date of conception (embryo transfer).</p>
+            <ul>
+                <li><strong>3-Day Transfer:</strong> Due date = Transfer date + 263 days</li>
+                <li><strong>5-Day Transfer:</strong> Due date = Transfer date + 261 days</li>
+                <li><strong>Frozen Embryo Transfer (FET):</strong> Same calculation based on embryo age</li>
+                <li><strong>Donor Egg Transfer:</strong> Based on embryo age at transfer</li>
+            </ul>
+            
+            <h3><i class="fas fa-baby"></i> IVF Pregnancy Trimesters</h3>
+            <ul>
+                <li><strong>First Trimester:</strong> Weeks 1-13 - Critical development period, embryo implantation, highest risk</li>
+                <li><strong>Second Trimester:</strong> Weeks 14-27 - Often called the "honeymoon period", lower risk</li>
+                <li><strong>Third Trimester:</strong> Weeks 28-40 - Final preparation for birth</li>
+            </ul>
+            
+            <h3><i class="fas fa-clipboard-list"></i> IVF Pregnancy Milestones</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Milestone</th>
+                        <th>Typical Tests/Scans</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>4-5</td>
+                        <td>First beta HCG test</td>
+                        <td>Blood test to confirm pregnancy</td>
+                    </tr>
+                    <tr>
+                        <td>6-7</td>
+                        <td>First ultrasound</td>
+                        <td>Confirm gestational sac, yolk sac</td>
+                    </tr>
+                    <tr>
+                        <td>8-9</td>
+                        <td>Second ultrasound</td>
+                        <td>Check fetal heartbeat</td>
+                    </tr>
+                    <tr>
+                        <td>10-12</td>
+                        <td>Nuchal translucency scan</td>
+                        <td>First trimester screening</td>
+                    </tr>
+                    <tr>
+                        <td>18-22</td>
+                        <td>Anatomy scan</td>
+                        <td>Detailed fetal anatomy check</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3><i class="fas fa-exclamation-circle"></i> Important IVF-Specific Notes</h3>
+            <p>IVF pregnancies may have additional monitoring, especially in the first trimester. You may have more frequent ultrasounds and blood tests.</p>
+            <p>Always consult with your reproductive endocrinologist and OB/GYN for personalized medical advice and to confirm your due date through clinical assessment.</p>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Disclaimer: This tool is for educational purposes only. Consult a healthcare professional for medical advice.</p>
+            <p>Made with <span class="heart">♥</span> for all IVF parents | BloomCycle</p>
+        </div>
+    </footer>
+
+    <script>
+        // Set default dates
+        const today = new Date();
+        const transferDate = new Date();
+        transferDate.setDate(today.getDate() - 14); // 2 weeks ago
+        
+        document.getElementById('transfer-date').valueAsDate = transferDate;
+        
+        // Form submission
+        document.getElementById('ivf-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const transferDate = new Date(document.getElementById('transfer-date').value);
+            const transferType = document.getElementById('transfer-type').value;
+            const embryoAge = parseInt(document.getElementById('embryo-age').value) || 5;
+            const pregnancyConfirmed = document.getElementById('pregnancy-confirmed').value;
+            
+            let dueDate;
+            let calculationMethod;
+            
+            // Calculate due date based on transfer type
+            switch(transferType) {
+                case '3day':
+                    dueDate = new Date(transferDate);
+                    dueDate.setDate(transferDate.getDate() + 263);
+                    calculationMethod = "Based on 3-day embryo transfer: Transfer date + 263 days";
+                    break;
+                    
+                case '5day':
+                    dueDate = new Date(transferDate);
+                    dueDate.setDate(transferDate.getDate() + 261);
+                    calculationMethod = "Based on 5-day blastocyst transfer: Transfer date + 261 days";
+                    break;
+                    
+                case 'frozen':
+                    if (embryoAge === 3) {
+                        dueDate = new Date(transferDate);
+                        dueDate.setDate(transferDate.getDate() + 263);
+                        calculationMethod = "Based on frozen 3-day embryo transfer: Transfer date + 263 days";
+                    } else {
+                        dueDate = new Date(transferDate);
+                        dueDate.setDate(transferDate.getDate() + 261);
+                        calculationMethod = "Based on frozen 5-day blastocyst transfer: Transfer date + 261 days";
+                    }
+                    break;
+                    
+                case 'donor':
+                    dueDate = new Date(transferDate);
+                    dueDate.setDate(transferDate.getDate() + 266);
+                    calculationMethod = "Based on donor egg transfer: Transfer date + 266 days";
+                    break;
+                    
+                default:
+                    // Default to 5-day calculation
+                    dueDate = new Date(transferDate);
+                    dueDate.setDate(transferDate.getDate() + 261);
+                    calculationMethod = "Based on standard embryo transfer: Transfer date + 261 days";
+            }
+            
+            // Calculate pregnancy progress
+            const today = new Date();
+            const daysSinceTransfer = Math.floor((today - transferDate) / (1000 * 60 * 60 * 24));
+            
+            // Adjust for embryo age at transfer
+            const adjustedDays = daysSinceTransfer + embryoAge - 14;
+            const weeksPregnant = Math.floor(adjustedDays / 7);
+            const daysPregnant = adjustedDays % 7;
+            
+            // Calculate days to go
+            const daysToGo = Math.floor((dueDate - today) / (1000 * 60 * 60 * 24));
+            
+            // Determine trimester
+            let trimester, trimesterProgress;
+            if (weeksPregnant < 14) {
+                trimester = "First";
+                trimesterProgress = `Week ${weeksPregnant + 1} of 13`;
+            } else if (weeksPregnant < 28) {
+                trimester = "Second";
+                trimesterProgress = `Week ${weeksPregnant + 1} of 27`;
+            } else {
+                trimester = "Third";
+                trimesterProgress = `Week ${weeksPregnant + 1} of 40`;
+            }
+            
+            // Calculate trimester dates
+            const firstTrimesterStart = new Date(transferDate);
+            firstTrimesterStart.setDate(transferDate.getDate() - embryoAge); // Approximate LMP
+            
+            const firstTrimesterEnd = new Date(firstTrimesterStart);
+            firstTrimesterEnd.setDate(firstTrimesterStart.getDate() + 91); // 13 weeks
+            
+            const secondTrimesterEnd = new Date(firstTrimesterEnd);
+            secondTrimesterEnd.setDate(firstTrimesterEnd.getDate() + 98); // 14 weeks
+            
+            const thirdTrimesterEnd = dueDate;
+            
+            // Format dates for display
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const shortOptions = { month: 'short', day: 'numeric' };
+            
+            // Display results
+            document.getElementById('due-date').textContent = dueDate.toLocaleDateString('en-US', options);
+            document.getElementById('calculation-method').textContent = calculationMethod;
+            document.getElementById('weeks-pregnant').textContent = weeksPregnant;
+            document.getElementById('days-pregnant').textContent = `${daysPregnant} days`;
+            document.getElementById('trimester').textContent = trimester;
+            document.getElementById('trimester-progress').textContent = trimesterProgress;
+            document.getElementById('days-to-go').textContent = daysToGo;
+            
+            // Display trimester dates
+            document.getElementById('first-trimester').textContent = 
+                `${firstTrimesterStart.toLocaleDateString('en-US', shortOptions)} - ${firstTrimesterEnd.toLocaleDateString('en-US', shortOptions)}`;
+            document.getElementById('second-trimester').textContent = 
+                `${firstTrimesterEnd.toLocaleDateString('en-US', shortOptions)} - ${secondTrimesterEnd.toLocaleDateString('en-US', shortOptions)}`;
+            document.getElementById('third-trimester').textContent = 
+                `${secondTrimesterEnd.toLocaleDateString('en-US', shortOptions)} - ${thirdTrimesterEnd.toLocaleDateString('en-US', shortOptions)}`;
+            
+            // Show results
+            document.getElementById('result').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

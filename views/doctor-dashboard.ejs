@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Portal - BloomCycle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e83f8e;
+            --primary-light: #ff8fab;
+            --primary-lighter: #ffc2d1;
+            --secondary: #9c4668;
+            --light: #fff9fb;
+            --white: #ffffff;
+            --text: #3a2e37;
+            --bloom: linear-gradient(135deg, #e83f8e, #ff8fab);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --success: #4CAF50;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light); min-height: 100vh; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding: 1.5rem; background: var(--white); border-radius: 15px; box-shadow: var(--shadow); }
+        .header h1 { color: var(--primary); font-weight: 700; margin: 0; }
+        
+        .doctor-info { display: flex; align-items: center; gap: 15px; }
+        .doctor-avatar { width: 50px; height: 50px; border-radius: 50%; background: var(--bloom); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        
+        .section-card { background: var(--white); border-radius: 15px; padding: 1.5rem; box-shadow: var(--shadow); }
+        .section-header { color: var(--primary); font-weight: 600; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary-lighter); }
+        
+        .chat-container { display: flex; flex-direction: column; height: 600px; }
+        .conversations-list { max-height: 400px; overflow-y: auto; }
+        .conversation-item { padding: 1rem; border-bottom: 1px solid var(--primary-lighter); cursor: pointer; transition: all 0.3s ease; }
+        .conversation-item:hover { background: var(--primary-lighter); }
+        .conversation-item.active { background: var(--primary-lighter); border-left: 4px solid var(--primary); }
+        
+        .chat-area { display: flex; flex-direction: column; height: 500px; border: 1px solid var(--primary-lighter); border-radius: 10px; overflow: hidden; }
+        .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column; }
+        .chat-input-area { display: flex; gap: 10px; padding: 1rem; background: var(--white); border-top: 1px solid var(--primary-lighter); }
+        .chat-input { flex: 1; padding: 0.75rem; border: 1px solid var(--primary-lighter); border-radius: 25px; }
+        .send-btn { background: var(--bloom); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; }
+        .send-btn:hover { transform: scale(1.05); }
+        .send-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        .message { max-width: 80%; padding: 0.75rem 1rem; margin-bottom: 1rem; border-radius: 15px; word-wrap: break-word; }
+        .message.user { align-self: flex-start; background: var(--white); border: 1px solid var(--primary-lighter); }
+        .message.doctor { align-self: flex-end; background: var(--bloom); color: white; }
+        
+        .unread-badge { background: var(--primary); color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.8rem; }
+        
+        .message-time { font-size: 0.7rem; opacity: 0.7; margin-top: 5px; }
+        
+        .no-conversations { text-align: center; padding: 2rem; color: var(--secondary); }
+        .no-conversations i { font-size: 3rem; margin-bottom: 1rem; color: var(--primary-lighter); }
+        
+        .questions-list { max-height: 400px; overflow-y: auto; }
+        .question-item { padding: 1rem; border-bottom: 1px solid var(--primary-lighter); }
+        .question-text { font-weight: 500; margin-bottom: 0.5rem; }
+        .question-meta { font-size: 0.8rem; color: var(--secondary); }
+        .answer-form { margin-top: 1rem; }
+        .answer-textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--primary-lighter); border-radius: 8px; resize: vertical; }
+        .submit-answer { background: var(--bloom); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; margin-top: 0.5rem; }
+        
+        .nav-buttons { display: flex; gap: 10px; margin-bottom: 1rem; }
+        
+        @media (max-width: 768px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .nav-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-user-md me-2"></i>Doctor Portal</h1>
+            <div class="doctor-info">
+                <div class="doctor-avatar">DR</div>
+                <div>
+                    <h4 class="mb-0"><%= doctorName %></h4>
+                    <p class="mb-0 text-muted"><%= doctorSpecialization %></p>
+                </div>
+                <div class="nav-buttons">
+                    <a href="/doctor/chat" class="btn btn-primary">
+                        <i class="fas fa-comments me-2"></i>Go to Chat
+                    </a>
+                    <a href="/logout" class="btn btn-outline-primary">Log Out</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <!-- Questions Section -->
+            <div class="section-card">
+                <h3 class="section-header"><i class="fas fa-question-circle me-2"></i>Questions to Answer</h3>
+                <div class="questions-list" id="questionsList">
+                    <% if (posts && posts.length > 0) { %>
+                        <% posts.forEach(post => { %>
+                            <div class="question-item">
+                                <div class="question-text"><%= post.question %></div>
+                                <div class="question-meta">
+                                    Asked by: <%= post.asked_by_name %> | 
+                                    <%= new Date(post.created_at).toLocaleDateString() %>
+                                </div>
+                                <form class="answer-form" action="/doctor/answer/<%= post.id %>" method="POST">
+                                    <textarea class="answer-textarea" name="answer" placeholder="Type your answer here..." rows="3" required></textarea>
+                                    <button type="submit" class="submit-answer">
+                                        <i class="fas fa-paper-plane me-1"></i>Submit Answer
+                                    </button>
+                                </form>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="no-conversations">
+                            <i class="fas fa-check-circle"></i>
+                            <p>No unanswered questions</p>
+                            <small>All questions have been answered!</small>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Quick Chat Preview -->
+            <div class="section-card">
+                <h3 class="section-header"><i class="fas fa-comments me-2"></i>Recent Chats</h3>
+                <div class="chat-container">
+                    <div class="conversations-list" id="conversationsList">
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading conversations...</p>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="/doctor/chat" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt me-1"></i>Open Full Chat Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUserId = null;
+        let refreshInterval = null;
+
+        // Load conversations for the preview
+        async function loadConversations() {
+            try {
+                const response = await fetch('/api/doctor/chat/messages');
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayConversations(result.data);
+                } else {
+                    console.error('Failed to load conversations:', result.message);
+                }
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+            }
+        }
+
+        function displayConversations(conversations) {
+            const container = document.getElementById('conversationsList');
+            
+            if (conversations.length === 0) {
+                container.innerHTML = `
+                    <div class="no-conversations">
+                        <i class="fas fa-comments"></i>
+                        <p>No active conversations</p>
+                        <small>When users message you, they will appear here.</small>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show only the first 3 conversations in preview
+            const previewConversations = conversations.slice(0, 3);
+            
+            container.innerHTML = previewConversations.map(conv => `
+                <div class="conversation-item" onclick="openChat(${conv.user_id})">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${conv.user_name}</strong>
+                            <div class="text-muted small">Last: ${new Date(conv.last_message_time).toLocaleDateString()}</div>
+                        </div>
+                        ${conv.unread_count > 0 ? `<span class="unread-badge">${conv.unread_count} unread</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            // Show "more" indicator if there are more conversations
+            if (conversations.length > 3) {
+                container.innerHTML += `
+                    <div class="text-center text-muted py-2">
+                        <small>+${conversations.length - 3} more conversations</small>
+                    </div>
+                `;
+            }
+        }
+
+        function openChat(userId) {
+            // Redirect to full chat dashboard
+            window.location.href = '/doctor/chat';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadConversations();
+            // Refresh conversations every 10 seconds for preview
+            setInterval(loadConversations, 10000);
+        });
+
+        // Add confirmation for answer submission
+        document.querySelectorAll('.answer-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const textarea = this.querySelector('.answer-textarea');
+                if (!textarea.value.trim()) {
+                    e.preventDefault();
+                    alert('Please enter an answer before submitting.');
+                    return;
+                }
+                
+                if (!confirm('Are you sure you want to submit this answer?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implantation Calculator | BloomCycle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e83f8e;
+            --primary-light: #ff8fab;
+            --primary-lighter: #ffc2d1;
+            --secondary: #9c4668;
+            --light: #fff9fb;
+            --white: #ffffff;
+            --text: #3a2e37;
+            --bloom: linear-gradient(135deg, #e83f8e, #ff8fab);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 15px 35px rgba(232, 63, 142, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        nav {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--bloom);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo i {
+            font-size: 1.6rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background-color: var(--primary-lighter);
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: var(--bloom);
+            color: var(--white);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path fill="white" d="M30,30 Q50,10 70,30 T90,50 T70,70 T50,90 T30,70 T10,50 T30,30 Z"/></svg>');
+            background-size: 200px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+            position: relative;
+        }
+
+        .calculator {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            border: 1px solid var(--primary-lighter);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculator::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--bloom);
+        }
+
+        .calculator h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--primary-lighter);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: var(--light);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(232, 63, 142, 0.2);
+        }
+
+        .cycle-length-note {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        button {
+            background: var(--bloom);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(232, 63, 142, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(232, 63, 142, 0.4);
+        }
+
+        .result {
+            background-color: var(--primary-lighter);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            display: none;
+            border-left: 4px solid var(--primary);
+        }
+
+        .result h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 15px 0;
+            text-align: center;
+            background: var(--white);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .implantation-info {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            flex: 1;
+            min-width: 150px;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--primary-light);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            margin-top: 5px;
+        }
+
+        .timeline-breakdown {
+            margin-top: 25px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .timeline-stage {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--primary-lighter);
+        }
+
+        .timeline-stage:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .timeline-stage h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timeline-dates {
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .interpretation {
+            margin-top: 15px;
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .info-section {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--primary-lighter);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--bloom);
+        }
+
+        .info-section h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--primary-lighter);
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+
+        .info-section h3 {
+            color: var(--primary);
+            margin: 20px 0 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-section p {
+            margin-bottom: 15px;
+        }
+
+        .info-section ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-section li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--primary-lighter);
+        }
+
+        th {
+            background-color: var(--primary-lighter);
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--light);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--primary-lighter);
+        }
+
+        .heart {
+            color: var(--primary);
+        }
+
+        .implantation-details {
+            background-color: var(--primary-lighter);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .implantation-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-venus"></i>
+                BloomCycle
+            </div>
+            <div class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Home</a>
+                <a href="/calculators"><i class="fas fa-calculator"></i> Calculators</a>
+                <a href="/dashboard"><i class="fas fa-user"></i> My Account</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <h1>Implantation Calculator</h1>
+            <p class="subtitle">Estimate when implantation might occur based on your menstrual cycle</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="calculator">
+            <h2><i class="fas fa-seedling"></i> Calculate Your Implantation Window</h2>
+            
+            <form id="implantation-form">
+                <div class="form-group">
+                    <label for="lmp-date"><i class="fas fa-calendar-alt"></i> First Day of Last Menstrual Period</label>
+                    <input type="date" id="lmp-date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cycle-length"><i class="fas fa-arrows-alt-h"></i> Average Cycle Length (days)</label>
+                    <input type="number" id="cycle-length" min="21" max="35" value="28" required>
+                    <p class="cycle-length-note">Typically 28 days, but can vary from 21 to 35 days</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="luteal-phase"><i class="fas fa-hourglass-half"></i> Luteal Phase Length (days)</label>
+                    <input type="number" id="luteal-phase" min="10" max="16" value="14" required>
+                    <p class="cycle-length-note">Typically 14 days, but can vary from 10 to 16 days</p>
+                </div>
+                
+                <button type="submit">
+                    <i class="fas fa-calculator"></i> Calculate Implantation Window
+                </button>
+            </form>
+            
+            <div class="result" id="result">
+                <h3><i class="fas fa-chart-line"></i> Your Implantation Timeline</h3>
+                
+                <div class="implantation-details">
+                    <h4><i class="fas fa-info-circle"></i> Implantation Window</h4>
+                    <p>Implantation typically occurs 6-12 days after ovulation, with the most common timeframe being 8-10 days.</p>
+                </div>
+                
+                <div class="result-value" id="implantation-window"></div>
+                
+                <div class="implantation-info">
+                    <div class="info-box">
+                        <h4><i class="fas fa-egg"></i> Ovulation Date</h4>
+                        <div class="info-value" id="ovulation-date"></div>
+                        <div class="info-label">Estimated date</div>
+                    </div>
+                    <div class="info-box">
+                        <h4><i class="fas fa-calendar-day"></i> Earliest Implantation</h4>
+                        <div class="info-value" id="earliest-implantation"></div>
+                        <div class="info-label">6 days after ovulation</div>
+                    </div>
+                    <div class="info-box">
+                        <h4><i class="fas fa-calendar-check"></i> Most Likely Implantation</h4>
+                        <div class="info-value" id="likely-implantation"></div>
+                        <div class="info-label">8-10 days after ovulation</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-breakdown">
+                    <h4><i class="fas fa-chart-bar"></i> Fertility Timeline</h4>
+                    <div class="timeline-stage">
+                        <h4><i class="fas fa-calendar-alt"></i> Last Menstrual Period</h4>
+                        <div class="timeline-dates" id="lmp-display"></div>
+                        <p>Day 1 of your cycle</p>
+                    </div>
+                    <div class="timeline-stage">
+                        <h4><i class="fas fa-egg"></i> Ovulation</h4>
+                        <div class="timeline-dates" id="ovulation-display"></div>
+                        <p>Approximately 14 days before your next period</p>
+                    </div>
+                    <div class="timeline-stage">
+                        <h4><i class="fas fa-seedling"></i> Fertilization Window</h4>
+                        <div class="timeline-dates" id="fertilization-window"></div>
+                        <p>Egg can be fertilized for 12-24 hours after ovulation</p>
+                    </div>
+                    <div class="timeline-stage">
+                        <h4><i class="fas fa-home"></i> Implantation Window</h4>
+                        <div class="timeline-dates" id="implantation-range"></div>
+                        <p>Embryo implants in the uterine lining 6-12 days after ovulation</p>
+                    </div>
+                </div>
+                
+                <div class="interpretation">
+                    <h4><i class="fas fa-info-circle"></i> About Implantation</h4>
+                    <p>Implantation is when a fertilized egg attaches to the uterine wall. This typically occurs 6-12 days after ovulation, with 8-10 days being most common.</p>
+                    <p>After implantation, your body begins producing hCG (pregnancy hormone), which can be detected by pregnancy tests a few days later.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="info-section">
+            <h2><i class="fas fa-book-medical"></i> Understanding Implantation</h2>
+            
+            <h3><i class="fas fa-calculator"></i> How Implantation Dates Are Calculated</h3>
+            <p>Implantation typically occurs 6-12 days after ovulation. This calculator estimates:</p>
+            <ul>
+                <li><strong>Ovulation date:</strong> Based on your cycle length and luteal phase</li>
+                <li><strong>Earliest implantation:</strong> 6 days after ovulation</li>
+                <li><strong>Most likely implantation:</strong> 8-10 days after ovulation</li>
+                <li><strong>Latest implantation:</strong> 12 days after ovulation</li>
+            </ul>
+            
+            <h3><i class="fas fa-seedling"></i> The Implantation Process</h3>
+            <ul>
+                <li><strong>Day 1:</strong> Fertilization occurs in the fallopian tube</li>
+                <li><strong>Days 2-5:</strong> Embryo travels toward the uterus, dividing as it goes</li>
+                <li><strong>Days 5-6:</strong> Embryo reaches the uterus as a blastocyst</li>
+                <li><strong>Days 6-12:</strong> Blastocyst implants into the uterine lining</li>
+                <li><strong>Days 7-14:</strong> hCG production begins and increases rapidly</li>
+            </ul>
+            
+            <h3><i class="fas fa-clipboard-list"></i> Signs and Symptoms of Implantation</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symptom</th>
+                        <th>Frequency</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Implantation Bleeding</td>
+                        <td>25-30% of pregnancies</td>
+                        <td>Light spotting that occurs when the embryo attaches</td>
+                    </tr>
+                    <tr>
+                        <td>Implantation Cramps</td>
+                        <td>20-30% of pregnancies</td>
+                        <td>Mild cramping different from menstrual cramps</td>
+                    </tr>
+                    <tr>
+                        <td>Basal Body Temperature</td>
+                        <td>When tracked</td>
+                        <td>Temperature dip followed by sustained elevation</td>
+                    </tr>
+                    <tr>
+                        <td>Breast Tenderness</td>
+                        <td>Common</td>
+                        <td>Breasts may feel sore, tingly, or heavier</td>
+                    </tr>
+                    <tr>
+                        <td>Fatigue</td>
+                        <td>Common</td>
+                        <td>Feeling unusually tired due to hormonal changes</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3><i class="fas fa-exclamation-circle"></i> Important Notes</h3>
+            <p>Implantation timing can vary between individuals and even between pregnancies. This calculator provides estimates based on typical patterns.</p>
+            <p>If you're tracking ovulation with methods like BBT charting or ovulation predictor kits, you can get a more accurate estimate of your implantation window.</p>
+            <p>Always consult with your healthcare provider for personalized medical advice.</p>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Disclaimer: This tool is for educational purposes only. Consult a healthcare professional for medical advice.</p>
+            <p>Made with <span class="heart">♥</span> for all trying to conceive | BloomCycle</p>
+        </div>
+    </footer>
+
+    <script>
+        // Set default dates
+        const today = new Date();
+        const defaultLmpDate = new Date();
+        defaultLmpDate.setDate(today.getDate() - 14); // 2 weeks ago
+        
+        document.getElementById('lmp-date').valueAsDate = defaultLmpDate;
+        
+        // Form submission
+        document.getElementById('implantation-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const lmpDate = new Date(document.getElementById('lmp-date').value);
+            const cycleLength = parseInt(document.getElementById('cycle-length').value) || 28;
+            const lutealPhase = parseInt(document.getElementById('luteal-phase').value) || 14;
+            
+            // Calculate ovulation date (cycle length - luteal phase)
+            const ovulationDate = new Date(lmpDate);
+            ovulationDate.setDate(lmpDate.getDate() + (cycleLength - lutealPhase));
+            
+            // Calculate implantation window (6-12 days after ovulation)
+            const earliestImplantation = new Date(ovulationDate);
+            earliestImplantation.setDate(ovulationDate.getDate() + 6);
+            
+            const likelyImplantationStart = new Date(ovulationDate);
+            likelyImplantationStart.setDate(ovulationDate.getDate() + 8);
+            
+            const likelyImplantationEnd = new Date(ovulationDate);
+            likelyImplantationEnd.setDate(ovulationDate.getDate() + 10);
+            
+            const latestImplantation = new Date(ovulationDate);
+            latestImplantation.setDate(ovulationDate.getDate() + 12);
+            
+            // Calculate fertilization window (ovulation day + 1 day)
+            const fertilizationEnd = new Date(ovulationDate);
+            fertilizationEnd.setDate(ovulationDate.getDate() + 1);
+            
+            // Format dates for display
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const shortOptions = { month: 'short', day: 'numeric' };
+            
+            // Display results
+            document.getElementById('implantation-window').textContent = 
+                `${earliestImplantation.toLocaleDateString('en-US', shortOptions)} - ${latestImplantation.toLocaleDateString('en-US', shortOptions)}`;
+            
+            document.getElementById('ovulation-date').textContent = ovulationDate.toLocaleDateString('en-US', shortOptions);
+            document.getElementById('earliest-implantation').textContent = earliestImplantation.toLocaleDateString('en-US', shortOptions);
+            document.getElementById('likely-implantation').textContent = 
+                `${likelyImplantationStart.toLocaleDateString('en-US', shortOptions)} - ${likelyImplantationEnd.toLocaleDateString('en-US', shortOptions)}`;
+            
+            document.getElementById('lmp-display').textContent = lmpDate.toLocaleDateString('en-US', options);
+            document.getElementById('ovulation-display').textContent = ovulationDate.toLocaleDateString('en-US', options);
+            document.getElementById('fertilization-window').textContent = 
+                `${ovulationDate.toLocaleDateString('en-US', shortOptions)} - ${fertilizationEnd.toLocaleDateString('en-US', shortOptions)}`;
+            document.getElementById('implantation-range').textContent = 
+                `${earliestImplantation.toLocaleDateString('en-US', shortOptions)} - ${latestImplantation.toLocaleDateString('en-US', shortOptions)}`;
+            
+            // Show results
+            document.getElementById('result').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

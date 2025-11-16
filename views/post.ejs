@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Forum | BloomCycle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e83f8e;
+            --primary-light: #ff8fab;
+            --primary-lighter: #ffc2d1;
+            --secondary: #9c4668;
+            --light: #fff9fb;
+            --white: #ffffff;
+            --text: #3a2e37;
+            --bloom: linear-gradient(135deg, #e83f8e, #ff8fab);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        nav {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--bloom);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo i {
+            font-size: 1.6rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background-color: var(--primary-lighter);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .page-title {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .page-description {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 50px 0;
+        }
+        
+        .premium-btn {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #8b6914;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .premium-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .normal-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(232, 63, 142, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .normal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(232, 63, 142, 0.5);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--secondary);
+            border-top: 1px solid var(--primary-lighter);
+            margin-top: 40px;
+        }
+
+        .heart {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-venus"></i>
+                BloomCycle
+            </div>
+            <div class="nav-links">
+                <a href="/user/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="/calculators"><i class="fas fa-calculator"></i> Calculators</a>
+                <a href="#"><i class="fas fa-users"></i> Community Forum</a>
+                <a href="/logout">Log Out</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">Community Forum</h1>
+        <p class="page-description">
+            Connect with other users, ask questions, and share experiences in our supportive community.
+        </p>
+
+        <div class="button-container">
+            <button class="premium-btn" onclick="redirectToPremium()">
+                <i class="fas fa-crown"></i>
+                Premium
+            </button>
+            
+            <button class="normal-btn" onclick="redirectToNormal()">
+                Normal
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Made with <span class="heart">♥</span> for all menstruators | BloomCycle</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    
+    <script>
+        function redirectToPremium() {
+            // Redirect to private doctor chat page
+            window.location.href = '/doctor-chat';
+        }
+        
+        function redirectToNormal() {
+            // Redirect to normal community forum
+            window.location.href = '/community-forum';
+        }
+    </script>
+</body>
+</html>

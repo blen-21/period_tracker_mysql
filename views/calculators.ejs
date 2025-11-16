@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pregnancy Calculators Hub | BloomCycle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e83f8e;
+            --primary-light: #ff8fab;
+            --primary-lighter: #ffc2d1;
+            --secondary: #9c4668;
+            --light: #fff9fb;
+            --white: #ffffff;
+            --text: #3a2e37;
+            --bloom: linear-gradient(135deg, #e83f8e, #ff8fab);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 15px 35px rgba(232, 63, 142, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        nav {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--bloom);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo i {
+            font-size: 1.6rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background-color: var(--primary-lighter);
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0;
+            background: var(--bloom);
+            color: var(--white);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path fill="white" d="M30,30 Q50,10 70,30 T90,50 T70,70 T50,90 T30,70 T10,50 T30,30 Z"/></svg>');
+            background-size: 200px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-size: 1.1rem;
+            color: var(--secondary);
+            line-height: 1.8;
+        }
+
+        .calculators-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .calculator-card {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--primary-lighter);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculator-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--bloom);
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .calculator-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary-lighter);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 28px;
+            box-shadow: 0 5px 15px rgba(232, 63, 142, 0.2);
+        }
+
+        .calculator-card h2 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.3rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .calculator-card p {
+            margin-bottom: 20px;
+            flex-grow: 1;
+            color: var(--text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .calculator-features {
+            margin-bottom: 20px;
+        }
+
+        .calculator-features h3 {
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .calculator-features h3 i {
+            font-size: 0.8rem;
+        }
+
+        .calculator-features ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .calculator-features li {
+            margin-bottom: 6px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .calculator-features li:before {
+            content: "✓";
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--bloom);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(232, 63, 142, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(232, 63, 142, 0.4);
+        }
+
+        .info-section {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--primary-lighter);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--bloom);
+        }
+
+        .info-section h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--primary-lighter);
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .info-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            background: var(--primary-lighter);
+        }
+
+        .info-card h3 {
+            color: var(--primary);
+            margin: 15px 0 10px;
+            font-weight: 600;
+        }
+
+        .info-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--primary-lighter);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            color: var(--primary);
+            font-size: 28px;
+            box-shadow: 0 5px 15px rgba(232, 63, 142, 0.2);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--primary-lighter);
+        }
+
+        .heart {
+            color: var(--primary);
+        }
+
+        @media (max-width: 1200px) {
+            .calculators-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calculators-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .calculator-card {
+                padding: 20px;
+            }
+            
+            .calculator-card h2 {
+                font-size: 1.2rem;
+                min-height: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .calculators-grid {
+                gap: 20px;
+            }
+            
+            .calculator-card {
+                padding: 15px;
+            }
+            
+            .calculator-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-venus"></i>
+                BloomCycle
+            </div>
+            <div class="nav-links">
+                <a href="/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="/calculators"><i class="fas fa-calculator"></i> Calculators</a>
+                <a href="/dashboard"><i class="fas fa-user"></i> My Account</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <h1>Pregnancy Calculators</h1>
+            <p class="subtitle">Essential tools to track your pregnancy journey with accuracy and care</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="intro">
+            <p>Our collection of pregnancy calculators helps you understand and track important milestones during your pregnancy. Each tool is designed with medical accuracy and ease of use in mind, all within the trusted BloomCycle environment.</p>
+        </section>
+
+        <section class="calculators-grid">
+            <!-- Beta hCG Calculator Card -->
+            <div class="calculator-card">
+                <div class="calculator-icon">
+                    <i class="fas fa-vial"></i>
+                </div>
+                <h2>Beta hCG Doubling Time Calculator</h2>
+                <p>Calculate the doubling time of your Beta hCG levels to monitor early pregnancy health and progression.</p>
+                
+                <div class="calculator-features">
+                    <h3><i class="fas fa-star"></i> Key Features:</h3>
+                    <ul>
+                        <li>Calculate hCG doubling time between two tests</li>
+                        <li>Understand what your results mean</li>
+                        <li>Track early pregnancy progression</li>
+                        <li>Medical interpretation of results</li>
+                    </ul>
+                </div>
+                
+                <a href="/hcg" class="btn">
+                    <i class="fas fa-calculator"></i> Use hCG Calculator
+                </a>
+            </div>
+
+            <!-- Implantation Calculator Card -->
+            <div class="calculator-card">
+                <div class="calculator-icon">
+                    <i class="fas fa-arrows-alt-h"></i>
+                </div>
+                <h2>Implantation Calculator</h2>
+                <p>Determine when implantation might occur based on your cycle to understand early pregnancy timing.</p>
+                
+                <div class="calculator-features">
+                    <h3><i class="fas fa-star"></i> Key Features:</h3>
+                    <ul>
+                        <li>Calculate based on ovulation or last period</li>
+                        <li>Account for different cycle lengths</li>
+                        <li>Identify implantation window</li>
+                        <li>Learn about implantation signs</li>
+                    </ul>
+                </div>
+                
+                <a href="/implantations" class="btn">
+                    <i class="fas fa-calculator"></i> Use Implantation Calculator
+                </a>
+            </div>
+
+            <!-- Due Date Calculator Card -->
+            <div class="calculator-card">
+                <div class="calculator-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h2>Pregnancy Due Date Calculator</h2>
+                <p>Calculate your estimated due date and track your pregnancy progress through all trimesters.</p>
+                
+                <div class="calculator-features">
+                    <h3><i class="fas fa-star"></i> Key Features:</h3>
+                    <ul>
+                        <li>Multiple calculation methods</li>
+                        <li>Trimester breakdown</li>
+                        <li>Pregnancy progress tracking</li>
+                        <li>IVF and ultrasound options</li>
+                    </ul>
+                </div>
+                
+                <a href="/duedate" class="btn">
+                    <i class="fas fa-calculator"></i> Use Due Date Calculator
+                </a>
+            </div>
+
+            <!-- IVF Due Date Calculator Card -->
+            <div class="calculator-card">
+                <div class="calculator-icon">
+                    <i class="fas fa-dna"></i>
+                </div>
+                <h2>IVF Due Date Calculator</h2>
+                <p>Specialized calculator for IVF pregnancies with accurate dating for different transfer types.</p>
+                
+                <div class="calculator-features">
+                    <h3><i class="fas fa-star"></i> Key Features:</h3>
+                    <ul>
+                        <li>3-day and 5-day embryo transfers</li>
+                        <li>Frozen embryo transfer options</li>
+                        <li>IVF-specific milestone tracking</li>
+                        <li>Specialized IVF information</li>
+                    </ul>
+                </div>
+                
+                <a href="/ivf" class="btn">
+                    <i class="fas fa-calculator"></i> Use IVF Calculator
+                </a>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <h2>Understanding Your Pregnancy Journey</h2>
+            <p>Pregnancy is an incredible journey with many milestones. Our calculators help you navigate this special time by providing accurate information when you need it most, all within the trusted BloomCycle environment.</p>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h3>Medical Accuracy</h3>
+                    <p>All calculators are based on established medical principles and formulas used by healthcare professionals.</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Designed for You</h3>
+                    <p>Created with the needs of expecting parents in mind - simple, clear, and supportive.</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Easy to Use</h3>
+                    <p>Intuitive interfaces that work perfectly on all devices - desktop, tablet, or mobile.</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>Educational Resources</h3>
+                    <p>Each calculator includes helpful information to understand your results in context.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Disclaimer: These tools are for educational purposes only. Always consult with your healthcare provider for medical advice.</p>
+            <p>Made with <span class="heart">♥</span> for all expecting parents | BloomCycle</p>
+        </div>
+    </footer>
+</body>
+</html>

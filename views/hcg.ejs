@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCG Level Calculator | BloomCycle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e83f8e;
+            --primary-light: #ff8fab;
+            --primary-lighter: #ffc2d1;
+            --secondary: #9c4668;
+            --light: #fff9fb;
+            --white: #ffffff;
+            --text: #3a2e37;
+            --bloom: linear-gradient(135deg, #e83f8e, #ff8fab);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 15px 35px rgba(232, 63, 142, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        nav {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--bloom);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo i {
+            font-size: 1.6rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background-color: var(--primary-lighter);
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: var(--bloom);
+            color: var(--white);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path fill="white" d="M30,30 Q50,10 70,30 T90,50 T70,70 T50,90 T30,70 T10,50 T30,30 Z"/></svg>');
+            background-size: 200px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+            position: relative;
+        }
+
+        .calculator {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            border: 1px solid var(--primary-lighter);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculator::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--bloom);
+        }
+
+        .calculator h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-method {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .method-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px;
+            background: var(--light);
+            border: 1px solid var(--primary-lighter);
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--secondary);
+            font-weight: 500;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .method-btn.active {
+            background: var(--bloom);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(232, 63, 142, 0.3);
+        }
+
+        .method-btn:hover:not(.active) {
+            background: var(--primary-lighter);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--primary-lighter);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: var(--light);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(232, 63, 142, 0.2);
+        }
+
+        .cycle-length-note {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        button {
+            background: var(--bloom);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(232, 63, 142, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(232, 63, 142, 0.4);
+        }
+
+        .result {
+            background-color: var(--primary-lighter);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            display: none;
+            border-left: 4px solid var(--primary);
+        }
+
+        .result h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 15px 0;
+            text-align: center;
+            background: var(--white);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .hcg-info {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            flex: 1;
+            min-width: 150px;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--primary-light);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            margin-top: 5px;
+        }
+
+        .hcg-levels {
+            margin-top: 25px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .hcg-level {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--primary-lighter);
+        }
+
+        .hcg-level:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .hcg-level h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hcg-level-dates {
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .interpretation {
+            margin-top: 15px;
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .info-section {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--primary-lighter);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--bloom);
+        }
+
+        .info-section h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--primary-lighter);
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+
+        .info-section h3 {
+            color: var(--primary);
+            margin: 20px 0 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-section p {
+            margin-bottom: 15px;
+        }
+
+        .info-section ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-section li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--primary-lighter);
+        }
+
+        th {
+            background-color: var(--primary-lighter);
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--light);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--primary-lighter);
+        }
+
+        .heart {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .input-method {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .hcg-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .method-btn {
+                min-width: 100%;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-venus"></i>
+                BloomCycle
+            </div>
+            <div class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Home</a>
+                <a href="/calculators"><i class="fas fa-calculator"></i> Calculators</a>
+                <a href="/dashboard"><i class="fas fa-user"></i> My Account</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <h1>HCG Level Calculator</h1>
+            <p class="subtitle">Track your HCG levels and doubling time for pregnancy monitoring</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="calculator">
+            <h2><i class="fas fa-chart-line"></i> Calculate Your HCG Doubling Time</h2>
+            
+            <form id="hcg-form">
+                <!-- First HCG Test -->
+                <div class="form-group">
+                    <label for="first-hcg"><i class="fas fa-vial"></i> First HCG Level (mIU/mL)</label>
+                    <input type="number" id="first-hcg" min="1" required>
+                    
+                    <label for="first-hcg-date"><i class="fas fa-calendar-alt"></i> Date of First Test</label>
+                    <input type="date" id="first-hcg-date" required>
+                </div>
+                
+                <!-- Second HCG Test -->
+                <div class="form-group">
+                    <label for="second-hcg"><i class="fas fa-vial"></i> Second HCG Level (mIU/mL)</label>
+                    <input type="number" id="second-hcg" min="1" required>
+                    
+                    <label for="second-hcg-date"><i class="fas fa-calendar-alt"></i> Date of Second Test</label>
+                    <input type="date" id="second-hcg-date" required>
+                </div>
+                
+                <button type="submit">
+                    <i class="fas fa-calculator"></i> Calculate Doubling Time
+                </button>
+            </form>
+            
+            <div class="result" id="result">
+                <h3><i class="fas fa-chart-line"></i> Your HCG Analysis</h3>
+                
+                <div class="hcg-info">
+                    <div class="info-box">
+                        <h4><i class="fas fa-clock"></i> Doubling Time</h4>
+                        <div class="info-value" id="doubling-time"></div>
+                        <div class="info-label">Hours between tests</div>
+                    </div>
+                    <div class="info-box">
+                        <h4><i class="fas fa-percentage"></i> Increase</h4>
+                        <div class="info-value" id="hcg-increase"></div>
+                        <div class="info-label">Percentage increase</div>
+                    </div>
+                    <div class="info-box">
+                        <h4><i class="fas fa-chart-bar"></i> Status</h4>
+                        <div class="info-value" id="hcg-status"></div>
+                        <div class="info-label">Doubling time assessment</div>
+                    </div>
+                </div>
+                
+                <div class="hcg-levels">
+                    <h4><i class="fas fa-history"></i> HCG Test History</h4>
+                    <div class="hcg-level">
+                        <h4><i class="fas fa-vial"></i> First Test</h4>
+                        <div class="hcg-level-dates" id="first-test-date"></div>
+                        <p>HCG Level: <span id="first-test-value"></span> mIU/mL</p>
+                    </div>
+                    <div class="hcg-level">
+                        <h4><i class="fas fa-vial"></i> Second Test</h4>
+                        <div class="hcg-level-dates" id="second-test-date"></div>
+                        <p>HCG Level: <span id="second-test-value"></span> mIU/mL</p>
+                    </div>
+                    <div class="hcg-level">
+                        <h4><i class="fas fa-calculator"></i> Calculation</h4>
+                        <p>Time between tests: <span id="time-between-tests"></span> days</p>
+                        <p>Expected doubling time in early pregnancy: 48-72 hours</p>
+                    </div>
+                </div>
+                
+                <div class="interpretation">
+                    <h4><i class="fas fa-info-circle"></i> About HCG Doubling Time</h4>
+                    <p>In a healthy early pregnancy, HCG levels typically double every 48-72 hours. This doubling time slows as pregnancy progresses.</p>
+                    <p>HCG levels usually peak around 8-11 weeks of pregnancy and then begin to decline.</p>
+                    <p>This calculator is for informational purposes only. Always consult with your healthcare provider for medical advice.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="info-section">
+            <h2><i class="fas fa-book-medical"></i> Understanding HCG Levels</h2>
+            
+            <h3><i class="fas fa-chart-line"></i> What is HCG?</h3>
+            <p>Human Chorionic Gonadotropin (HCG) is a hormone produced during pregnancy. It's made by cells that form the placenta, which nourishes the egg after it has been fertilized and becomes attached to the uterine wall.</p>
+            
+            <h3><i class="fas fa-clock"></i> HCG Doubling Time</h3>
+            <p>In early pregnancy, HCG levels typically double every 48-72 hours. This doubling time is an important indicator of a healthy pregnancy:</p>
+            <ul>
+                <li><strong>Normal doubling time:</strong> 48-72 hours in early pregnancy</li>
+                <li><strong>Slower doubling:</strong> May indicate potential issues</li>
+                <li><strong>Faster doubling:</strong> Usually normal, but could indicate multiple pregnancies</li>
+                <li><strong>Declining levels:</strong> May indicate miscarriage or ectopic pregnancy</li>
+            </ul>
+            
+            <h3><i class="fas fa-calendar-week"></i> Typical HCG Levels by Week</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Weeks Since Last Menstrual Period</th>
+                        <th>Typical HCG Range (mIU/mL)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>3 weeks</td>
+                        <td>5 - 50</td>
+                    </tr>
+                    <tr>
+                        <td>4 weeks</td>
+                        <td>5 - 426</td>
+                    </tr>
+                    <tr>
+                        <td>5 weeks</td>
+                        <td>18 - 7,340</td>
+                    </tr>
+                    <tr>
+                        <td>6 weeks</td>
+                        <td>1,080 - 56,500</td>
+                    </tr>
+                    <tr>
+                        <td>7-8 weeks</td>
+                        <td>7,650 - 229,000</td>
+                    </tr>
+                    <tr>
+                        <td>9-12 weeks</td>
+                        <td>25,700 - 288,000</td>
+                    </tr>
+                    <tr>
+                        <td>13-16 weeks</td>
+                        <td>13,300 - 254,000</td>
+                    </tr>
+                    <tr>
+                        <td>17-24 weeks</td>
+                        <td>4,060 - 165,400</td>
+                    </tr>
+                    <tr>
+                        <td>25-40 weeks</td>
+                        <td>3,640 - 117,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3><i class="fas fa-exclamation-circle"></i> Important Notes</h3>
+            <p>HCG levels can vary widely between individuals and pregnancies. The rate of increase (doubling time) is often more important than the actual number.</p>
+            <p>Always consult with your healthcare provider for personalized medical advice and interpretation of your HCG levels.</p>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Disclaimer: This tool is for educational purposes only. Consult a healthcare professional for medical advice.</p>
+            <p>Made with <span class="heart">♥</span> for all expecting parents | BloomCycle</p>
+        </div>
+    </footer>
+
+    <script>
+        // Set default dates
+        const today = new Date();
+        const firstDate = new Date();
+        firstDate.setDate(today.getDate() - 4);
+        
+        const secondDate = new Date();
+        secondDate.setDate(today.getDate() - 2);
+        
+        document.getElementById('first-hcg-date').valueAsDate = firstDate;
+        document.getElementById('second-hcg-date').valueAsDate = secondDate;
+        
+        // Form submission
+        document.getElementById('hcg-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const firstHcg = parseFloat(document.getElementById('first-hcg').value);
+            const firstDate = new Date(document.getElementById('first-hcg-date').value);
+            const secondHcg = parseFloat(document.getElementById('second-hcg').value);
+            const secondDate = new Date(document.getElementById('second-hcg-date').value);
+            
+            // Validate dates
+            if (secondDate <= firstDate) {
+                alert("The second test date must be after the first test date.");
+                return;
+            }
+            
+            // Calculate time difference in hours
+            const timeDiff = Math.abs(secondDate - firstDate);
+            const hoursDiff = timeDiff / (1000 * 60 * 60);
+            
+            // Calculate doubling time
+            const doublingTime = (hoursDiff * Math.log(2)) / Math.log(secondHcg / firstHcg);
+            
+            // Calculate percentage increase
+            const percentageIncrease = ((secondHcg - firstHcg) / firstHcg) * 100;
+            
+            // Determine status
+            let status, statusColor;
+            if (doublingTime <= 48) {
+                status = "Fast";
+                statusColor = "#28a745";
+            } else if (doublingTime <= 72) {
+                status = "Normal";
+                statusColor = "#007bff";
+            } else if (doublingTime <= 96) {
+                status = "Slow";
+                statusColor = "#ffc107";
+            } else {
+                status = "Very Slow";
+                statusColor = "#dc3545";
+            }
+            
+            // Format dates for display
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const shortOptions = { month: 'short', day: 'numeric' };
+            
+            // Display results
+            document.getElementById('doubling-time').textContent = Math.round(doublingTime) + "h";
+            document.getElementById('hcg-increase').textContent = Math.round(percentageIncrease) + "%";
+            document.getElementById('hcg-status').textContent = status;
+            document.getElementById('hcg-status').style.color = statusColor;
+            
+            document.getElementById('first-test-date').textContent = firstDate.toLocaleDateString('en-US', options);
+            document.getElementById('first-test-value').textContent = firstHcg;
+            
+            document.getElementById('second-test-date').textContent = secondDate.toLocaleDateString('en-US', options);
+            document.getElementById('second-test-value').textContent = secondHcg;
+            
+            const daysBetween = Math.round(hoursDiff / 24);
+            document.getElementById('time-between-tests').textContent = daysBetween;
+            
+            // Show results
+            document.getElementById('result').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

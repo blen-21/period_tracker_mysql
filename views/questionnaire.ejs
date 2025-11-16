@@ -604,7 +604,7 @@
 
                 <!-- Symptoms -->
                 <div class="question-group" data-question="symptoms">
-                    <h2 class="question-title"><i class="fas fa-stethoscope"></i> What symptoms do you typically experience? (Select all that apply)</h2>
+                    <h2 class="question-title"><i class="fas fa-stethoscope"></i> What symptoms do you typically experience? Right before your period starts? (Select all that apply)</h2>
                     <div class="checkbox-group">
                         <div class="checkbox-item" data-value="cramps">
                             <input type="checkbox" id="cramps" name="symptoms" value="cramps">
@@ -900,9 +900,9 @@
                 submitQuestionnaire();
             });
             
-            // Dashboard button
+            // Dashboard button - FIXED: Changed from '/dashboard' to '/user/dashboard'
             dashboardBtn.addEventListener('click', function() {
-                window.location.href = '/dashboard';
+                window.location.href = '/user/dashboard';
             });
             
             // Update progress indicator

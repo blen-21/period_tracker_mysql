@@ -1,0 +1,525 @@
+:root {
+      --primary: #e83f8e;
+      --primary-light: #ff8fab;
+      --primary-lighter: #ffc2d1;
+      --secondary: #9c4668;
+      --light: #fff9fb;
+      --white: #ffffff;
+      --text: #3a2e37;
+      --bloom: linear-gradient(135deg, #e83f8e, #ff8fab);
+    }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  }
+
+/* Navigation Bar Styles */
+nav {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 1rem 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.nav-logo {
+  font-weight: bold;
+  color: var(--primary);
+  font-size: 1.2rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: var(--secondary);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: var(--primary);
+}
+
+body {
+font-family: 'Poppins', sans-serif;
+background-color: var(--light);
+color: var(--text);
+line-height: 1.6;
+background-image:
+radial-gradient(circle at 10% 20%, var(--primary-lighter) 0%, var(--light) 90%),
+url('data\:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" opacity="0.03"><path fill="%23e83f8e" d="M50 0 Q60 30 80 30 Q100 30 80 60 Q60 90 50 60 Q40 90 20 60 Q0 30 20 30 Q40 30 50 0 Z"/></svg>');
+min-height: 100vh;
+}
+
+.container {
+max-width: 900px;
+margin: 0 auto;
+padding: 40px 20px;
+position: relative;
+}
+
+header {
+text-align: center;
+margin-bottom: 40px;
+position: relative;
+}
+
+h1 {
+font-family: 'Playfair Display', serif;
+font-size: 3rem;
+margin-bottom: 10px;
+background: var(--bloom);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+position: relative;
+display: inline-block;
+}
+
+h1::after {
+content: '';
+position: absolute;
+bottom: -5px;
+left: 0;
+width: 100%;
+height: 3px;
+background: var(--bloom);
+border-radius: 3px;
+}
+
+.subtitle {
+color: var(--secondary);
+font-size: 1.2rem;
+font-weight: 300;
+max-width: 600px;
+margin: 0 auto;
+}
+
+.tracker-card {
+background: rgba(255,255,255,0.95);
+border-radius: 20px;
+padding: 40px;
+box-shadow: 0 15px 40px rgba(232, 63, 142, 0.12);
+margin-bottom: 40px;
+transition: transform 0.4s, box-shadow 0.4s;
+backdrop-filter: blur(5px);
+border: 1px solid rgba(255,255,255,0.3);
+}
+
+h2 {
+font-family: 'Playfair Display', serif;
+color: var(--primary);
+margin-bottom: 25px;
+font-size: 2rem;
+position: relative;
+display: inline-block;
+}
+
+h2::after {
+content: '';
+position: absolute;
+bottom: -8px;
+left: 0;
+width: 50px;
+height: 3px;
+background: var(--bloom);
+border-radius: 3px;
+}
+
+.form-group {
+margin-bottom: 25px;
+position: relative;
+}
+
+label {
+display: block;
+margin-bottom: 10px;
+color: var(--secondary);
+font-weight: 600;
+font-size: 1.1rem;
+}
+
+input {
+width: 100%;
+padding: 16px 20px;
+border: 2px solid var(--primary-lighter);
+border-radius: 12px;
+font-size: 16px;
+transition: all 0.3s;
+background: rgba(255,255,255,0.8);
+}
+
+input:focus {
+border-color: var(--primary);
+outline: none;
+box-shadow: 0 0 0 4px rgba(232, 63, 142, 0.15);
+}
+
+button {
+background: var(--bloom);
+color: white;
+border: none;
+padding: 18px 30px;
+border-radius: 12px;
+font-size: 17px;
+font-weight: 600;
+cursor: pointer;
+width: 100%;
+transition: all 0.4s;
+text-transform: uppercase;
+letter-spacing: 1.5px;
+box-shadow: 0 5px 20px rgba(232, 63, 142, 0.3);
+position: relative;
+overflow: hidden;
+}
+
+button:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 25px rgba(232, 63, 142, 0.4);
+letter-spacing: 2px;
+}
+
+button::after {
+content: '';
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: linear-gradient(
+to bottom right,
+rgba(255,255,255,0.3) 0%,
+rgba(255,255,255,0) 60%
+);
+transform: rotate(30deg);
+animation: shine 3s infinite;
+}
+
+.results {
+margin-top: 35px;
+background: rgba(255,194,209,0.3);
+padding: 25px;
+border-radius: 15px;
+color: var(--secondary);
+font-weight: 500;
+border-left: 5px solid var(--primary);
+backdrop-filter: blur(3px);
+}
+
+.results p {
+margin-bottom: 10px;
+}
+
+.results strong {
+color: var(--primary);
+font-weight: 600;
+}
+
+.calendar-container {
+background: rgba(255,255,255,0.95);
+border-radius: 20px;
+padding: 40px;
+box-shadow: 0 15px 40px rgba(232, 63, 142, 0.12);
+margin-bottom: 40px;
+backdrop-filter: blur(5px);
+border: 1px solid rgba(255,255,255,0.3);
+}
+
+.calendar-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 25px;
+}
+
+.calendar-header h2 {
+margin-bottom: 0;
+}
+
+.month-nav {
+display: flex;
+gap: 12px;
+}
+
+.month-nav button {
+width: auto;
+padding: 10px 18px;
+background: var(--primary-lighter);
+color: var(--primary);
+font-weight: bold;
+letter-spacing: normal;
+box-shadow: none;
+border-radius: 8px;
+}
+
+.month-nav button:hover {
+background: var(--primary);
+color: white;
+transform: none;
+letter-spacing: normal;
+}
+
+.calendar-grid {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+gap: 10px;
+}
+
+.day-header {
+text-align: center;
+font-weight: 600;
+color: var(--secondary);
+padding: 15px 5px;
+font-size: 1rem;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.day {
+background: rgba(255,249,251,0.7);
+padding: 15px 5px;
+text-align: center;
+border-radius: 12px;
+aspect-ratio: 1;
+display: flex;
+flex-direction: column;
+justify-content: center;
+transition: all 0.3s;
+position: relative;
+overflow: hidden;
+border: 1px solid rgba(255,255,255,0.5);
+}
+
+.day.empty {
+background: transparent;
+border: none;
+}
+
+.day-number {
+font-weight: 600;
+z-index: 2;
+font-size: 1.1rem;
+}
+
+.day-label {
+font-size: 0.75rem;
+margin-top: 5px;
+z-index: 2;
+font-weight: 500;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.period-day {
+background: var(--primary);
+color: white;
+transform: scale(1.05);
+box-shadow: 0 5px 15px rgba(232, 63, 142, 0.3);
+}
+
+.fertile-day {
+background: #f8bbd0;
+color: #c2185b;
+font-weight: 600;
+}
+
+.ovulation-day {
+background: #c2185b;
+color: white;
+transform: scale(1.05);
+box-shadow: 0 5px 15px rgba(156, 70, 104, 0.3);
+}
+
+.today {
+position: relative;
+border: 2px solid var(--primary);
+font-weight: bold;
+}
+
+.today::after {
+content: 'Today';
+position: absolute;
+top: 3px;
+right: 3px;
+font-size: 0.6rem;
+background: var(--primary);
+color: white;
+padding: 2px 4px;
+border-radius: 4px;
+}
+
+.legend {
+display: flex;
+flex-wrap: wrap;
+gap: 25px;
+justify-content: center;
+margin-top: 40px;
+}
+
+.legend-item {
+display: flex;
+align-items: center;
+gap: 10px;
+background: rgba(255,255,255,0.8);
+padding: 10px 15px;
+border-radius: 30px;
+box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.legend-color {
+width: 22px;
+height: 22px;
+border-radius: 6px;
+}
+
+.flower-decoration {
+position: absolute;
+opacity: 0.08;
+z-index: 0;
+pointer-events: none;
+}
+
+.flower-1 {
+top: 50px;
+left: 5%;
+font-size: 120px;
+animation: float 8s ease-in-out infinite;
+}
+
+.flower-2 {
+bottom: 10%;
+right: 5%;
+font-size: 100px;
+animation: float 10s ease-in-out infinite 2s;
+}
+
+.flower-3 {
+top: 30%;
+right: 10%;
+font-size: 80px;
+animation: float 7s ease-in-out infinite 1s;
+}
+
+@keyframes float {
+0%, 100% { transform: translateY(0) rotate(0deg); }
+50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes shine {
+0% { left: -50%; }
+20% { left: 150%; }
+100% { left: 150%; }
+}
+
+footer {
+text-align: center;
+margin-top: 60px;
+color: var(--secondary);
+font-size: 0.9rem;
+opacity: 0.8;
+}
+
+.heart {
+font-size: 1.2rem;
+color: var(--primary);
+animation: pulse 1.5s infinite;
+display: inline-block;
+}
+
+@keyframes pulse {
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.2); }
+}
+
+.fertility-note {
+font-size: 0.9rem;
+margin-top: 15px;
+padding: 10px;
+background: rgba(255,255,255,0.3);
+border-radius: 8px;
+border-left: 3px solid var(--secondary);
+}
+
+.fertility-note i {
+color: var(--secondary);
+margin-right: 5px;
+}
+
+/* Loading spinner styles */
+.loading-spinner {
+display: inline-block;
+width: 20px;
+height: 20px;
+border: 3px solid rgba(255, 255, 255, 0.3);
+border-radius: 50%;
+border-top-color: white;
+animation: spin 1s ease-in-out infinite;
+margin-right: 10px;
+}
+
+@keyframes spin {
+to { transform: rotate(360deg); }
+}
+
+.loading-text {
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+@media (max-width: 768px) {
+h1 {
+font-size: 2.3rem;
+}
+
+.subtitle {
+font-size: 1rem;
+}
+
+.container {
+padding: 30px 15px;
+}
+
+.tracker-card, .calendar-container {
+padding: 25px;
+}
+
+button {
+padding: 16px;
+}
+
+.day {
+padding: 10px 2px;
+font-size: 0.9rem;
+}
+
+.day-header {
+padding: 10px 2px;
+font-size: 0.8rem;
+}
+
+.flower-decoration {
+display: none;
+}
+
+.nav-links {
+  gap: 1rem;
+}
+}

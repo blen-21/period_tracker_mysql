@@ -337,13 +337,33 @@
             color: #228b22;
         }
 
+        .btn-delete {
+            background-color: #e83f8e;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            background-color: #ff4faa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(232, 63, 142, 0.3);
+        }
+
         .chart-container {
             background: var(--white);
             border-radius: 20px;
             padding: 2.5rem;
             box-shadow: var(--card-shadow);
             margin-bottom: 2rem;
-            width: 50%;
+            width: 100%;
             border: 1px solid rgba(46, 139, 87, 0.1);
             height: 500px;
         }
@@ -374,22 +394,6 @@
             align-items: center;
             justify-content: center;
         }
-.btn-delete {
-    background-color: #e83f8e;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.btn-delete:hover {
-    background-color: #ff4faa;
-}
 
         @media (max-width: 768px) {
             .admin-container {
@@ -423,6 +427,27 @@
             .chart-wrapper {
                 height: 300px;
             }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .notification.success {
+            background: #2e8b57;
+        }
+
+        .notification.error {
+            background: #e83f8e;
         }
     </style>
 </head>
@@ -474,7 +499,7 @@
                     <i class="fas fa-user-plus"></i>Add New Doctor
                 </div>
                 <div class="section-body">
-                    <form method="POST" action="/admin/add-doctor">
+                    <form id="addDoctorForm">
                         <div class="form-group">
                             <label class="form-label">Full Name</label>
                             <input type="text" class="form-control" name="name" placeholder="Doctor Full Name" required>
@@ -503,26 +528,27 @@
                     <i class="fas fa-list-alt"></i>Existing Doctors
                 </div>
                 <div class="section-body">
-                    <div class="doctors-list">
-                        <% if (doctors.length === 0) { %>
-                            <div class="text-center py-4">
-                                <i class="fas fa-user-md fa-3x mb-3" style="color: rgba(46, 139, 87, 0.2);"></i>
-                                <p class="text-muted">No doctors have been added yet.</p>
-                            </div>
-                        <% } else { %>
-                            <% doctors.forEach(doc => { %>
-                                <div class="doctor-item">
+                    <div class="doctors-list" id="doctorsList">
+                        <% if (doctors && doctors.length > 0) { %>
+                            <% doctors.forEach(doctor => { %>
+                                <div class="doctor-item" data-id="<%= doctor.id %>">
                                     <div class="doctor-info">
-                                        <h4>Dr. <%= doc.name %></h4>
-                                        <p><%= doc.email %></p>
+                                        <h4>Dr. <%= doctor.name %></h4>
+                                        <p><%= doctor.email %></p>
+                                        <small><%= doctor.specialization || 'Not specified' %></small>
                                     </div>
-                                  <form action="/admin/delete-doctor/<%= doc._id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this doctor?');">
-                            <button type="submit" class="btn-delete">
-                                <i class="fas fa-trash-alt"></i> Delete
-                            </button>
-                        </form>
+                                    <form action="/admin/delete-doctor/<%= doctor.id %>" method="POST" class="delete-form">
+                                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this doctor?')">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
+                                    </form>
                                 </div>
-                            <% }) %>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="text-center py-4">
+                                <i class="fas fa-user-md fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No doctors found. Add your first doctor above.</p>
+                            </div>
                         <% } %>
                     </div>
                 </div>
@@ -538,127 +564,215 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-       const totalUsers = <%- JSON.stringify(totalUsers || 0) %>;
-    const totalDoctors = <%- JSON.stringify(totalDoctors || 0) %>;
-    const totalAdmins = <%- JSON.stringify(totalAdmins || 0) %>;
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            const ctx = document.getElementById('roleChart').getContext('2d');
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('roleChart').getContext('2d');
 
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Users', 'Doctors', 'Admins'],
-                    datasets: [{
-                        label: 'Count',
-                        data: [totalUsers, totalDoctors, totalAdmins],
-                        backgroundColor: [
-                            'rgba(46, 139, 87, 0.9)',      // Sea Green
-                            'rgba(255, 127, 80, 0.9)',     // Coral
-                            'rgba(34, 139, 34, 0.9)'       // Forest Green
-                        ],
-                        borderColor: [
-                            'rgba(46, 139, 87, 1)',
-                            'rgba(255, 127, 80, 1)',
-                            'rgba(34, 139, 34, 1)'
-                        ],
-                        borderWidth: 2,
-                        borderRadius: 12,
-                        borderSkipped: false,
-                    }]
+        // Get data from data attributes instead of EJS in JavaScript
+        const statsContainer = document.querySelector('.stats-grid');
+        const totalUsers = parseInt(statsContainer.querySelector('.stat-card:nth-child(1) .stat-number').textContent);
+        const totalDoctors = parseInt(statsContainer.querySelector('.stat-card:nth-child(2) .stat-number').textContent);
+        const totalAdmins = parseInt(statsContainer.querySelector('.stat-card:nth-child(3) .stat-number').textContent);
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Users', 'Doctors', 'Admins'],
+                datasets: [{
+                    label: 'Count',
+                    data: [totalUsers, totalDoctors, totalAdmins],
+                    backgroundColor: [
+                        'rgba(46, 139, 87, 0.9)',
+                        'rgba(255, 127, 80, 0.9)',
+                        'rgba(34, 139, 34, 0.9)'
+                    ],
+                    borderColor: [
+                        'rgba(46, 139, 87, 1)',
+                        'rgba(255, 127, 80, 1)',
+                        'rgba(34, 139, 34, 1)'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 12,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'User Distribution by Role',
+                        font: {
+                            size: 18,
+                            weight: 'bold',
+                            family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                        },
+                        color: '#2e8b57',
+                        padding: {
+                            top: 10,
+                            bottom: 30
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#2e8b57',
+                        bodyColor: '#2f4f4f',
+                        borderColor: '#2e8b57',
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                return `Count: ${context.parsed.y}`;
+                            }
+                        }
+                    }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(46, 139, 87, 0.1)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 12,
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                            },
+                            precision: 0,
+                            color: '#708090'
                         },
                         title: {
                             display: true,
-                            text: 'User Distribution by Role',
+                            text: 'Number of Users',
                             font: {
-                                size: 18,
-                                weight: 'bold',
+                                size: 13,
+                                weight: '600',
                                 family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
                             },
-                            color: '#2e8b57',
-                            padding: {
-                                top: 10,
-                                bottom: 30
-                            }
+                            color: '#2e8b57'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
                         },
-                        tooltip: {
-                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                            titleColor: '#2e8b57',
-                            bodyColor: '#2f4f4f',
-                            borderColor: '#2e8b57',
-                            borderWidth: 1,
-                            cornerRadius: 8,
-                            displayColors: true,
-                            callbacks: {
-                                label: function(context) {
-                                    return `Count: ${context.parsed.y}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(46, 139, 87, 0.1)',
-                                drawBorder: false
+                        ticks: {
+                            font: {
+                                size: 14,
+                                weight: '600',
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
                             },
-                            ticks: {
-                                font: {
-                                    size: 12,
-                                    family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
-                                },
-                                precision: 0,
-                                color: '#708090'
-                            },
-                            title: {
-                                display: true,
-                                text: 'Number of Users',
-                                font: {
-                                    size: 13,
-                                    weight: '600',
-                                    family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
-                                },
-                                color: '#2e8b57'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                font: {
-                                    size: 14,
-                                    weight: '600',
-                                    family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
-                                },
-                                color: '#2f4f4f'
-                            }
+                            color: '#2f4f4f'
                         }
-                    },
-                    layout: {
-                        padding: {
-                            left: 10,
-                            right: 10,
-                            top: 20,
-                            bottom: 10
-                        }
-                    },
-                    animation: {
-                        duration: 1500,
-                        easing: 'easeOutQuart'
                     }
+                },
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 10,
+                        top: 20,
+                        bottom: 10
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+
+        // Form submission handling - UPDATED with better debugging
+        document.getElementById('addDoctorForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const specializationInput = document.querySelector('input[name="specialization"]');
+            const specializationValue = specializationInput ? specializationInput.value.trim() : '';
+            
+            const doctorData = {
+                name: formData.get('name').trim(),
+                email: formData.get('email').trim(),
+                password: formData.get('password'),
+                specialization: specializationValue || 'General Medicine'
+            };
+
+            console.log('🩺 Submitting doctor data:', doctorData);
+            console.log('📋 Specialization value:', specializationValue);
+            console.log('🎯 Final specialization being sent:', doctorData.specialization);
+
+            try {
+                const response = await fetch('/admin/add-doctor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(doctorData)
+                });
+
+                const responseData = await response.json();
+                console.log('📡 Server response:', responseData);
+
+                if (response.ok) {
+                    showNotification('Doctor added successfully!', 'success');
+                    this.reset();
+                    
+                    // Refresh the page to show updated data
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showNotification('Error: ' + (responseData.message || 'Failed to add doctor'), 'error');
+                }
+            } catch (error) {
+                console.error('❌ Network error:', error);
+                showNotification('Network error. Please try again.', 'error');
+            }
+        });
+
+        // Function to show notifications
+        function showNotification(message, type) {
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Handle delete forms
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!confirm('Are you sure you want to delete this doctor?')) {
+                    e.preventDefault();
                 }
             });
         });
-    </script>
+
+        // Debug: Check what doctors are currently loaded
+        console.log('👥 Current doctors in list:');
+        document.querySelectorAll('.doctor-item').forEach((item, index) => {
+            const name = item.querySelector('h4').textContent;
+            const email = item.querySelector('p').textContent;
+            const specialization = item.querySelector('small').textContent;
+            console.log(`Doctor ${index + 1}:`, { name, email, specialization });
+        });
+    });
+</script>
 </body>
 </html>

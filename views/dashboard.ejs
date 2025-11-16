@@ -847,8 +847,7 @@
 }
   </style>
 </head>
-<body>
-  <nav>
+<body data-user-id="<%= userId %>" data-user-name="<%= username %>">  <nav>
     <div class="nav-container">
       <div class="nav-logo">
         <i class="fas fa-venus"></i>
@@ -858,8 +857,8 @@
         <a href="#"><i class="fas fa-home"></i> Dashboard</a>
         <a href="/calculators"><i class="fas fa-calculator"></i> Calculators</a>
         <a href="#"><i class="fas fa-cog"></i> Settings</a>
-        <a href="/posts"><i class="fas fa-question"></i> Community Forum</a>
-         <a href="/logout">Log Out</a>
+        <a href="/post"><i class="fas fa-question"></i> Community Forum</a>
+        <a href="/logout">Log Out</a>
       </div>
     </div>
   </nav>
@@ -868,7 +867,6 @@
     <div class="dashboard-header">
       <h1><%= username %>, Welcome to Your Cycle Dashboard</h1>
       <p>Track your period, fertility, and symptoms all in one place</p>
-
     </div>
 
     <div class="stats-grid">
@@ -908,6 +906,7 @@
         <button class="btn" id="calculate-btn" onclick="handleCalculate()">
           <i class="fas fa-magic"></i> Calculate My Cycle
         </button>
+        <div id="results" style="margin-top: 15px;"></div>
       </div>
 
       <div class="card">
@@ -977,253 +976,260 @@
           </div>
         </div>
       </div>
-<div class="cycle-phase-info">
-  <div class="phase-card menstrual">
-    <h3><i class="fas fa-tint"></i> Menstrual Phase</h3>
-    <p>Days 1-5: Your period. The uterus sheds its lining.</p>
-    <div class="phase-symptoms">
-      <span class="symptom-tag">Cramps</span>
-      <span class="symptom-tag">Fatigue</span>
-      <span class="symptom-tag">Bloating</span>
     </div>
-  </div>
-  <div class="phase-card follicular">
-    <h3><i class="fas fa-seedling"></i> Follicular Phase</h3>
-    <p>Days 6-13: Your body prepares for ovulation. Energy increases.</p>
-    <div class="phase-symptoms">
-      <span class="symptom-tag">Rising energy</span>
-      <span class="symptom-tag">Clear skin</span>
-      <span class="symptom-tag">High motivation</span>
-    </div>
-  </div>
-  <div class="phase-card ovulation">
-    <h3><i class="fas fa-egg"></i> Ovulation</h3>
-    <p>Day 14: An egg is released. This is your most fertile time.</p>
-    <div class="phase-symptoms">
-      <span class="symptom-tag">Increased libido</span>
-      <span class="symptom-tag">Ovulation pain</span>
-      <span class="symptom-tag">Fertile mucus</span>
-    </div>
-  </div>
-  <div class="phase-card luteal">
-    <h3><i class="fas fa-leaf"></i> Luteal Phase</h3>
-    <p>Days 15-28: Your body prepares for a possible pregnancy.</p>
-    <div class="phase-symptoms">
-      <span class="symptom-tag">PMS</span>
-      <span class="symptom-tag">Food cravings</span>
-      <span class="symptom-tag">Mood swings</span>
-    </div>
-  </div>
-</div>
 
-      <div class="card mood-tracker-section">
-        <h2><i class="fas fa-smile"></i> Mood & Symptom Tracker</h2>
-        
-        <div class="date-picker">
-          <label for="date">Select Date:</label>
-          <input type="date" id="date">
+    <div class="cycle-phase-info">
+      <div class="phase-card menstrual">
+        <h3><i class="fas fa-tint"></i> Menstrual Phase</h3>
+        <p>Days 1-5: Your period. The uterus sheds its lining.</p>
+        <div class="phase-symptoms">
+          <span class="symptom-tag">Cramps</span>
+          <span class="symptom-tag">Fatigue</span>
+          <span class="symptom-tag">Bloating</span>
         </div>
-
-        <h3>Moods</h3>
-        <div class="mood-selector">
-          <div class="mood" data-mood="😊">
-            <div class="mood-emoji">😊</div>
-            <span class="mood-label">Happy</span>
-          </div>
-          <div class="mood" data-mood="😐">
-            <div class="mood-emoji">😐</div>
-            <span class="mood-label">Meh</span>
-          </div>
-          <div class="mood" data-mood="😢">
-            <div class="mood-emoji">😢</div>
-            <span class="mood-label">Sad</span>
-          </div>
-          <div class="mood" data-mood="😠">
-            <div class="mood-emoji">😠</div>
-            <span class="mood-label">Angry</span>
-          </div>
+      </div>
+      <div class="phase-card follicular">
+        <h3><i class="fas fa-seedling"></i> Follicular Phase</h3>
+        <p>Days 6-13: Your body prepares for ovulation. Energy increases.</p>
+        <div class="phase-symptoms">
+          <span class="symptom-tag">Rising energy</span>
+          <span class="symptom-tag">Clear skin</span>
+          <span class="symptom-tag">High motivation</span>
         </div>
+      </div>
+      <div class="phase-card ovulation">
+        <h3><i class="fas fa-egg"></i> Ovulation</h3>
+        <p>Day 14: An egg is released. This is your most fertile time.</p>
+        <div class="phase-symptoms">
+          <span class="symptom-tag">Increased libido</span>
+          <span class="symptom-tag">Ovulation pain</span>
+          <span class="symptom-tag">Fertile mucus</span>
+        </div>
+      </div>
+      <div class="phase-card luteal">
+        <h3><i class="fas fa-leaf"></i> Luteal Phase</h3>
+        <p>Days 15-28: Your body prepares for a possible pregnancy.</p>
+        <div class="phase-symptoms">
+          <span class="symptom-tag">PMS</span>
+          <span class="symptom-tag">Food cravings</span>
+          <span class="symptom-tag">Mood swings</span>
+        </div>
+      </div>
+    </div>
 
-        <h1>Symptoms</h1>
+    <div class="card mood-tracker-section">
+  <h2><i class="fas fa-smile"></i> Mood & Symptom Tracker</h2>
+  
+  <div class="date-picker">
+    <label for="date">Select Date:</label>
+    <input type="date" id="date">
+  </div>
+
+  <h3>Moods</h3>
+  <div class="mood-selector">
+    <div class="mood" data-mood="😊">
+      <div class="mood-emoji">😊</div>
+      <span class="mood-label">Happy</span>
+    </div>
+    <div class="mood" data-mood="😐">
+      <div class="mood-emoji">😐</div>
+      <span class="mood-label">Meh</span>
+    </div>
+    <div class="mood" data-mood="😢">
+      <div class="mood-emoji">😢</div>
+      <span class="mood-label">Sad</span>
+    </div>
+    <div class="mood" data-mood="😠">
+      <div class="mood-emoji">😠</div>
+      <span class="mood-label">Angry</span>
+    </div>
+  </div>
+
+  <h3>Symptoms</h3>
   <div class="mood-selector">
     <div class="mood" data-mood="Everything is Fine">
-      <img src="images/thumb-up.png" alt="fine" class="mood-img">
+      <img src="/images/thumb-up.png" alt="fine" class="mood-img">
       <span class="mood-label">Everything is Fine</span>
     </div>
     <div class="mood" data-mood="Headache">
-      <img src="images/headache.png" alt="Headache" class="mood-img">
+      <img src="/images/headache.png" alt="Headache" class="mood-img">
       <span class="mood-label">Headache</span>
     </div>
     <div class="mood" data-mood="Stomach Ache">
-      <img src="images/stomach.png" alt="Stomach Ache" class="mood-img">
+      <img src="/images/stomach.png" alt="Stomach Ache" class="mood-img">
       <span class="mood-label">Stomach Ache</span>
     </div>
     <div class="mood" data-mood="Insomnia">
-      <img src="images/pillow.png" alt="Insomnia" class="mood-img">
+      <img src="/images/pillow.png" alt="Insomnia" class="mood-img">
       <span class="mood-label">Insomnia</span>
     </div>
     <div class="mood" data-mood="Acne">
-      <img src="images/acne.png" alt="acne" class="mood-img">
+      <img src="/images/acne.png" alt="acne" class="mood-img">
       <span class="mood-label">Acne</span>
     </div>
     <div class="mood" data-mood="Tender Breasts">
-      <img src="images/tender-breasts.png" alt="tender-breasts" class="mood-img">
+      <img src="/images/tender-breasts.png" alt="tender-breasts" class="mood-img">
       <span class="mood-label">Tender Breasts</span>
     </div>
     <div class="mood" data-mood="Backache">
-      <img src="images/back.png" alt="back-ache" class="mood-img">
+      <img src="/images/back.png" alt="back-ache" class="mood-img">
       <span class="mood-label">Backache</span>
     </div>
     <div class="mood" data-mood="Fatigue">
-      <img src="images/low-battery.png" alt="fatigue" class="mood-img">
+      <img src="/images/low-battery.png" alt="fatigue" class="mood-img">
       <span class="mood-label">Fatigue</span>
     </div>
-    <div class="mood" data-mood="cravings">
-      <img src="images/hamburger.png" alt="cravings" class="mood-img">
+    <div class="mood" data-mood="Cravings">
+      <img src="/images/hamburger.png" alt="cravings" class="mood-img">
       <span class="mood-label">Cravings</span>
     </div>
   </div>
 
-  <h1>Digestion and Stool</h1>
+  <h3>Digestion and Stool</h3>
   <div class="mood-selector">
     <div class="mood" data-mood="Nausea">
-      <img src="images/nausea.png" alt="nausea" class="mood-img">
+      <img src="/images/nausea.png" alt="nausea" class="mood-img">
       <span class="mood-label">Nausea</span>
     </div>
     <div class="mood" data-mood="Diarrhea">
-      <img src="images/roll.png" alt="roll" class="mood-img">
+      <img src="/images/roll.png" alt="roll" class="mood-img">
       <span class="mood-label">Diarrhea</span>
     </div>
     <div class="mood" data-mood="Bloating">
-      <img src="images/bloating.png" alt="bloating" class="mood-img">
+      <img src="/images/bloating.png" alt="bloating" class="mood-img">
       <span class="mood-label">Bloating</span>
     </div>
     <div class="mood" data-mood="Constipation">
-      <img src="images/constipation.png" alt="constipation" class="mood-img">
+      <img src="/images/constipation.png" alt="constipation" class="mood-img">
       <span class="mood-label">Constipation</span>
     </div>
-  </div>
+   </div>
 
-<h1>Vaginal Discharge</h1>
-<div class="mood-selector">
-  <div class="mood" data-mood="No Discharge">
-    <i class="fas fa-ban discharge-icon"></i>
-    <span class="mood-label">No Discharge</span>
-  </div>
-  <div class="mood" data-mood="Dry">
-    <i class="fas fa-wind discharge-icon"></i>
-    <span class="mood-label">Dry</span>
-  </div>
-  <div class="mood" data-mood="Sticky">
-    <i class="fas fa-sticky-note discharge-icon"></i>
-    <span class="mood-label">Sticky</span>
-  </div>
-  <div class="mood" data-mood="Creamy">
-    <i class="fas fa-cloud discharge-icon"></i>
-    <span class="mood-label">Creamy</span>
-  </div>
-  <div class="mood" data-mood="Egg White">
-    <i class="fas fa-egg discharge-icon"></i>
-    <span class="mood-label">Egg White</span>
-  </div>
-  <div class="mood" data-mood="Watery">
-    <i class="fas fa-tint discharge-icon"></i>
-    <span class="mood-label">Watery</span>
-  </div>
-</div>
 
-<h1>Pregnancy Test</h1>
-<div class="mood-selector">
-  <div class="mood" data-mood="Didn't Take Test">
-    <i class="fas fa-times-circle discharge-icon"></i>
-    <span class="mood-label">Didn't Take Test</span>
-  </div>
-  <div class="mood" data-mood="Negative">
-    <i class="fas fa-minus-circle discharge-icon"></i>
-    <span class="mood-label">Negative</span>
-  </div>
-  <div class="mood" data-mood="Positive">
-    <i class="fas fa-plus-circle discharge-icon"></i>
-    <span class="mood-label">Positive</span>
-  </div>
-</div>
-<h1>Physical Activity</h1>
-<div class="mood-selector">
-  <div class="mood" data-mood="Didn't Exercise">
-    <i class="fas fa-bed discharge-icon"></i>
-    <span class="mood-label">Didn't Exercise</span>
-  </div>
-  <div class="mood" data-mood="Yoga">
-    <i class="fas fa-spa discharge-icon"></i>
-    <span class="mood-label">Yoga</span>
-  </div>
-  <div class="mood" data-mood="Gym">
-    <i class="fas fa-dumbbell discharge-icon"></i>
-    <span class="mood-label">Gym</span>
-  </div>
-  <div class="mood" data-mood="Aerobics">
-    <i class="fas fa-heartbeat discharge-icon"></i>
-    <span class="mood-label">Aerobics</span>
-  </div>
-  <div class="mood" data-mood="Swimming">
-    <i class="fas fa-swimmer discharge-icon"></i>
-    <span class="mood-label">Swimming</span>
-  </div>
-  <div class="mood" data-mood="Running">
-    <i class="fas fa-running discharge-icon"></i>
-    <span class="mood-label">Running</span>
-  </div>
-  <div class="mood" data-mood="Walking">
-    <i class="fas fa-walking discharge-icon"></i>
-    <span class="mood-label">Walking</span>
-  </div>
-</div>
-        <div class="log">
-          <div class="log-header">
-            <h3>Your Mood & Symptom History</h3>
-            <button class="clear-btn" id="clear-btn">
-              <i class="fas fa-trash-alt"></i> Clear All
-            </button>
-          </div>
-          <div class="log-entries" id="log-entries"></div>
+      <h3>Vaginal Discharge</h3>
+      <div class="mood-selector">
+        <div class="mood" data-mood="No Discharge">
+          <i class="fas fa-ban discharge-icon"></i>
+          <span class="mood-label">No Discharge</span>
+        </div>
+        <div class="mood" data-mood="Dry">
+          <i class="fas fa-wind discharge-icon"></i>
+          <span class="mood-label">Dry</span>
+        </div>
+        <div class="mood" data-mood="Sticky">
+          <i class="fas fa-sticky-note discharge-icon"></i>
+          <span class="mood-label">Sticky</span>
+        </div>
+        <div class="mood" data-mood="Creamy">
+          <i class="fas fa-cloud discharge-icon"></i>
+          <span class="mood-label">Creamy</span>
+        </div>
+        <div class="mood" data-mood="Egg White">
+          <i class="fas fa-egg discharge-icon"></i>
+          <span class="mood-label">Egg White</span>
+        </div>
+        <div class="mood" data-mood="Watery">
+          <i class="fas fa-tint discharge-icon"></i>
+          <span class="mood-label">Watery</span>
         </div>
       </div>
+
+      <h3>Pregnancy Test</h3>
+      <div class="mood-selector">
+        <div class="mood" data-mood="Didn't Take Test">
+          <i class="fas fa-times-circle discharge-icon"></i>
+          <span class="mood-label">Didn't Take Test</span>
+        </div>
+        <div class="mood" data-mood="Negative">
+          <i class="fas fa-minus-circle discharge-icon"></i>
+          <span class="mood-label">Negative</span>
+        </div>
+        <div class="mood" data-mood="Positive">
+          <i class="fas fa-plus-circle discharge-icon"></i>
+          <span class="mood-label">Positive</span>
+        </div>
+      </div>
+
+      <h3>Physical Activity</h3>
+      <div class="mood-selector">
+        <div class="mood" data-mood="Didn't Exercise">
+          <i class="fas fa-bed discharge-icon"></i>
+          <span class="mood-label">Didn't Exercise</span>
+        </div>
+        <div class="mood" data-mood="Yoga">
+          <i class="fas fa-spa discharge-icon"></i>
+          <span class="mood-label">Yoga</span>
+        </div>
+        <div class="mood" data-mood="Gym">
+          <i class="fas fa-dumbbell discharge-icon"></i>
+          <span class="mood-label">Gym</span>
+        </div>
+        <div class="mood" data-mood="Aerobics">
+          <i class="fas fa-heartbeat discharge-icon"></i>
+          <span class="mood-label">Aerobics</span>
+        </div>
+        <div class="mood" data-mood="Swimming">
+          <i class="fas fa-swimmer discharge-icon"></i>
+          <span class="mood-label">Swimming</span>
+        </div>
+        <div class="mood" data-mood="Running">
+          <i class="fas fa-running discharge-icon"></i>
+          <span class="mood-label">Running</span>
+        </div>
+        <div class="mood" data-mood="Walking">
+          <i class="fas fa-walking discharge-icon"></i>
+          <span class="mood-label">Walking</span>
+        </div>
+      </div>
+
+      <div class="log">
+        <div class="log-header">
+          <h3>Your Mood & Symptom History</h3>
+          <button class="clear-btn" id="clear-btn">
+            <i class="fas fa-trash-alt"></i> Clear All
+          </button>
+        </div>
+        <div class="log-entries" id="log-entries"></div>
+      </div>
     </div>
   </div>
-<!-- Gemini AI Chatbot -->
-<div class="chatbot-container">
-  <div class="chatbot-window" id="chatbotWindow">
-    <div class="chatbot-header">
-      <h3><i class="fas fa-robot"></i> BloomCycle Assistant</h3>
-      <button class="chatbot-close" id="chatbotClose">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="chatbot-messages" id="chatbotMessages">
-      <div class="welcome-message">
-        Hi! I'm your BloomCycle assistant. Ask me about periods, pregnancy, symptoms, or anything else!
+
+  <!-- Gemini AI Chatbot -->
+  <div class="chatbot-container">
+    <div class="chatbot-window" id="chatbotWindow">
+      <div class="chatbot-header">
+        <h3><i class="fas fa-robot"></i> BloomCycle Assistant</h3>
+        <button class="chatbot-close" id="chatbotClose">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
-      <div class="message bot">
-        Hello! I'm here to help with any questions about your cycle, pregnancy, or health. What would you like to know? 💖
+      <div class="chatbot-messages" id="chatbotMessages">
+        <div class="welcome-message">
+          Hi! I'm your BloomCycle assistant. Ask me about periods, pregnancy, symptoms, or anything else!
+        </div>
+        <div class="message bot">
+          Hello! I'm here to help with any questions about your cycle, pregnancy, or health. What would you like to know? 💖
+        </div>
+      </div>
+      <div class="chatbot-input">
+        <input type="text" id="chatbotInput" placeholder="Ask me anything..." maxlength="500">
+        <button id="chatbotSend">
+          <i class="fas fa-paper-plane"></i>
+        </button>
       </div>
     </div>
-    <div class="chatbot-input">
-      <input type="text" id="chatbotInput" placeholder="Ask me anything..." maxlength="500">
-      <button id="chatbotSend">
-        <i class="fas fa-paper-plane"></i>
-      </button>
-    </div>
+    <button class="chatbot-toggle" id="chatbotToggle">
+      <i class="fas fa-robot"></i>
+    </button>
   </div>
-  <button class="chatbot-toggle" id="chatbotToggle">
-    <i class="fas fa-robot"></i>
-  </button>
-</div>
+
   <footer>
     <p>Made with <span class="heart">♥</span> for all menstruators | BloomCycle</p>
   </footer>
+
 </body>
-  <script>
-// Calendar functionality with predictions
+ <script>
+  // Calendar functionality with predictions
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 
@@ -1241,10 +1247,12 @@ const dateInput = document.getElementById("date");
 const moodButtons = document.querySelectorAll(".mood");
 const logEntries = document.getElementById("log-entries");
 const clearBtn = document.getElementById("clear-btn");
-const MOOD_DB_KEY = 'bloomcycle-mood-database';
 
-// ADDED: Calculation data storage key
-const CALCULATION_DATA_KEY = 'bloomcycle-calculation-data';
+// FIXED: Get user data from HTML data attributes instead of EJS
+const USER_ID = document.body.getAttribute('data-user-id');
+const USER_NAME = document.body.getAttribute('data-user-name');
+const USER_MOOD_DB_KEY = `bloomcycle-mood-database-${USER_ID}`;
+const USER_CALCULATION_DATA_KEY = `bloomcycle-calculation-data-${USER_ID}`;
 
 // Chatbot elements
 const chatbotToggle = document.getElementById('chatbotToggle');
@@ -1260,20 +1268,147 @@ const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemi
 
 // Initialize the app
 window.onload = function () {
+  console.log('🚀 Initializing dashboard for user:', USER_ID, USER_NAME);
+  
   document.getElementById("start-date").valueAsDate = new Date();
   checkPregnancyStatus();
   initDatabase();
   setDefaultDate();
   updateLog();
   initChatbot();
-  syncExistingMoodsToMySQL();
+  loadUserDataFromMySQL();
   
   // ADDED: Restore calculation data
   restoreCalculationData();
   renderCalendar();
 };
 
-// ADDED: Save calculation data to localStorage
+// ADDED: Load user data from MySQL on page load
+async function loadUserDataFromMySQL() {
+  try {
+    console.log('🔄 Loading user data from MySQL for user:', USER_ID);
+    
+    // Load cycles data
+    const cyclesResponse = await fetch('/api/user-cycles');
+    if (cyclesResponse.ok) {
+      const cyclesData = await cyclesResponse.json();
+      if (cyclesData.success) {
+        console.log('✅ Loaded cycles from MySQL:', cyclesData.data.length);
+        // Process and display cycles data
+        processMySQLCyclesData(cyclesData.data);
+      }
+    }
+    
+    // Load predictions data
+    const predictionsResponse = await fetch('/api/user-predictions');
+    if (predictionsResponse.ok) {
+      const predictionsData = await predictionsResponse.json();
+      if (predictionsData.success) {
+        console.log('✅ Loaded predictions from MySQL:', predictionsData.data.length);
+        // Process predictions data
+        processMySQLPredictionsData(predictionsData.data);
+      }
+    }
+    
+    // Load mood logs data
+    const moodLogsResponse = await fetch('/api/user-mood-logs');
+    if (moodLogsResponse.ok) {
+      const moodLogsData = await moodLogsResponse.json();
+      if (moodLogsData.success) {
+        console.log('✅ Loaded mood logs from MySQL:', moodLogsData.data.length);
+        // Process mood logs data
+        processMySQLMoodLogsData(moodLogsData.data);
+      }
+    }
+    
+  } catch (error) {
+    console.error('💥 Error loading user data from MySQL:', error);
+  }
+}
+
+// ADDED: Process MySQL cycles data
+function processMySQLCyclesData(cyclesData) {
+  // Convert MySQL cycles data to local format if needed
+  cyclesData.forEach(cycle => {
+    // Process cycle data for calendar display
+    if (cycle.start_date && cycle.cycle_length) {
+      // You can use this data to populate predictions
+    }
+  });
+}
+
+// ADDED: Process MySQL predictions data
+function processMySQLPredictionsData(predictionsData) {
+  // Clear existing predictions
+  predictedPeriodStarts = [];
+  ovulationDates = [];
+  fertileWindows = [];
+  
+  predictionsData.forEach(prediction => {
+    try {
+      const predData = JSON.parse(prediction.prediction_data);
+      
+      // Restore predicted period starts
+      if (predData.predictedPeriodStarts) {
+        predictedPeriodStarts = predData.predictedPeriodStarts.map(dateStr => new Date(dateStr));
+      }
+      
+      // Restore ovulation dates
+      if (predData.ovulationDates) {
+        ovulationDates = predData.ovulationDates.map(dateStr => new Date(dateStr));
+      }
+      
+      // Restore fertile windows
+      if (predData.fertileWindows) {
+        fertileWindows = predData.fertileWindows.map(window => ({
+          start: new Date(window.start),
+          end: new Date(window.end)
+        }));
+      }
+      
+    } catch (error) {
+      console.error('Error parsing prediction data:', error);
+    }
+  });
+  
+  // Update calendar with restored predictions
+  if (predictedPeriodStarts.length > 0) {
+    renderCalendar();
+  }
+}
+
+// ADDED: Process MySQL mood logs data
+function processMySQLMoodLogsData(moodLogsData) {
+  const localMoodDB = JSON.parse(localStorage.getItem(USER_MOOD_DB_KEY)) || [];
+  
+  // Merge MySQL data with local data, avoiding duplicates
+  moodLogsData.forEach(moodLog => {
+    const existingEntry = localMoodDB.find(entry => 
+      entry.mysqlId === moodLog.id || 
+      (entry.date === moodLog.log_date && entry.mood === moodLog.mood)
+    );
+    
+    if (!existingEntry) {
+      localMoodDB.push({
+        id: Date.now() + Math.random(), // Local ID
+        mysqlId: moodLog.id,
+        date: moodLog.log_date,
+        mood: moodLog.mood,
+        category: 'mood', // Default category
+        formattedDate: formatDate(moodLog.log_date),
+        timestamp: moodLog.created_at,
+        formattedTime: formatTime(moodLog.created_at),
+        intensity: moodLog.intensity,
+        notes: moodLog.notes
+      });
+    }
+  });
+  
+  localStorage.setItem(USER_MOOD_DB_KEY, JSON.stringify(localMoodDB));
+  updateLog();
+}
+
+// ADDED: Save calculation data to localStorage with user-specific key
 function saveCalculationDataToLocalStorage() {
   const calculationData = {
     startDate: document.getElementById("start-date").value,
@@ -1289,13 +1424,13 @@ function saveCalculationDataToLocalStorage() {
     currentYear: currentYear
   };
   
-  localStorage.setItem(CALCULATION_DATA_KEY, JSON.stringify(calculationData));
+  localStorage.setItem(USER_CALCULATION_DATA_KEY, JSON.stringify(calculationData));
 }
 
-// ADDED: Restore calculation data from localStorage
+// ADDED: Restore calculation data from localStorage with user-specific key
 function restoreCalculationData() {
   try {
-    const savedData = localStorage.getItem(CALCULATION_DATA_KEY);
+    const savedData = localStorage.getItem(USER_CALCULATION_DATA_KEY);
     if (!savedData) return;
 
     const calculationData = JSON.parse(savedData);
@@ -1503,24 +1638,6 @@ Please provide a helpful, accurate, and supportive response. Focus on women's he
   }
 }
 
-function getCycleContext() {
-  const db = JSON.parse(localStorage.getItem(MOOD_DB_KEY)) || [];
-  const recentSymptoms = db.slice(-5).map(entry => entry.mood).join(', ');
-  
-  let context = "The user is using a period and fertility tracking app. ";
-  
-  if (isPregnant) {
-    const weeksPregnant = Math.floor((280 - Math.ceil((pregnancyDueDate - new Date()) / (24 * 60 * 60 * 1000))) / 7);
-    context += `They are currently ${weeksPregnant} weeks pregnant. `;
-  }
-  
-  if (recentSymptoms) {
-    context += `Recent tracked symptoms/moods: ${recentSymptoms}. `;
-  }
-  
-  return context;
-}
-
 // Prediction functions
 async function handleCalculate() {
   const calculateBtn = document.getElementById("calculate-btn");
@@ -1539,6 +1656,7 @@ async function handleCalculate() {
     await new Promise(resolve => setTimeout(resolve, 800));
     await predictCycle();
     await saveCycleDataToMySQL();
+    await savePredictionToMySQL(); // ADDED: Save predictions separately
   } catch (error) {
     console.error("Error calculating cycle:", error);
     document.getElementById("results").innerHTML = `
@@ -1550,7 +1668,7 @@ async function handleCalculate() {
   }
 }
 
-// UPDATED: Save cycle data to MySQL using your cycles table schema
+// UPDATED: Save cycle data to MySQL
 async function saveCycleDataToMySQL() {
   try {
     const startDateInput = document.getElementById("start-date").value;
@@ -1600,9 +1718,39 @@ async function saveCycleDataToMySQL() {
   }
 }
 
+// ADDED: Save predictions to MySQL
+async function savePredictionToMySQL() {
+  try {
+    const predictionData = {
+      predictedPeriodStarts: predictedPeriodStarts.map(date => date.toISOString()),
+      ovulationDates: ovulationDates.map(date => date.toISOString()),
+      fertileWindows: fertileWindows.map(window => ({
+        start: window.start.toISOString(),
+        end: window.end.toISOString()
+      }))
+    };
+
+    const response = await fetch('/api/predictions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prediction_data: predictionData
+      })
+    });
+
+    if (response.ok) {
+      console.log('✅ Predictions saved to MySQL');
+    }
+  } catch (error) {
+    console.error('💥 Error saving predictions to MySQL:', error);
+  }
+}
+
 // Helper function to get recent symptoms
 function getRecentSymptoms() {
-  const db = JSON.parse(localStorage.getItem(MOOD_DB_KEY)) || [];
+  const db = JSON.parse(localStorage.getItem(USER_MOOD_DB_KEY)) || [];
   const recentSymptoms = db
     .filter(entry => {
       const categories = ["symptom", "discharge", "pregnancy_test", "physical_activity"];
@@ -1615,7 +1763,7 @@ function getRecentSymptoms() {
 
 // Helper function to get recent mood
 function getRecentMood() {
-  const db = JSON.parse(localStorage.getItem(MOOD_DB_KEY)) || [];
+  const db = JSON.parse(localStorage.getItem(USER_MOOD_DB_KEY)) || [];
   const moodEntry = db
     .filter(entry => entry.category === "mood")
     .slice(-1)[0];
@@ -1631,7 +1779,7 @@ function predictCycle() {
     }
 
     const startDateInput = document.getElementById("start-date").value;
-    const loggedMoods = JSON.parse(localStorage.getItem('bloomcycle-mood-database')) || [];
+    const loggedMoods = JSON.parse(localStorage.getItem(USER_MOOD_DB_KEY)) || [];
     const symptomEntries = loggedMoods
       .map(entry => entry.mood.toLowerCase())
       .filter(symptom => ["tender breasts", "bloating"].includes(symptom));
@@ -1714,6 +1862,7 @@ function changeMonth(offset) {
   saveCalculationDataToLocalStorage();
 }
 
+// Calendar rendering functions
 function renderCalendar() {
   const calendar = document.getElementById("calendar");
   const monthYear = document.getElementById("monthYear");
@@ -1866,7 +2015,7 @@ function datesEqual(date1, date2) {
 }
 
 function checkPregnancyStatus() {
-  const db = JSON.parse(localStorage.getItem(MOOD_DB_KEY)) || [];
+  const db = JSON.parse(localStorage.getItem(USER_MOOD_DB_KEY)) || [];
   const positiveTest = db.find(entry => entry.mood === "Positive");
   
   if (positiveTest) {
@@ -1876,7 +2025,7 @@ function checkPregnancyStatus() {
     pregnancyDueDate.setDate(testDate.getDate() + 280);
     
     document.querySelector('.dashboard-header h1').innerHTML = 
-      `<i class="fas fa-baby"></i> <%= username %>, Welcome to Your Pregnancy Journey`;
+      `<i class="fas fa-baby"></i> ${USER_NAME}, Welcome to Your Pregnancy Journey`;
     document.querySelector('.dashboard-header p').textContent = 
       'Track your pregnancy journey and countdown to your due date';
   }
@@ -1884,15 +2033,15 @@ function checkPregnancyStatus() {
 
 // Mood tracker functions
 function initDatabase() {
-  if (!localStorage.getItem(MOOD_DB_KEY)) {
-    localStorage.setItem(MOOD_DB_KEY, JSON.stringify([]));
+  if (!localStorage.getItem(USER_MOOD_DB_KEY)) {
+    localStorage.setItem(USER_MOOD_DB_KEY, JSON.stringify([]));
   }
 }
 
-// UPDATED: Sync existing moods to MySQL using your cycles table
+// UPDATED: Sync existing moods to MySQL
 async function syncExistingMoodsToMySQL() {
   try {
-    const db = JSON.parse(localStorage.getItem(MOOD_DB_KEY)) || [];
+    const db = JSON.parse(localStorage.getItem(USER_MOOD_DB_KEY)) || [];
     console.log('🔄 Starting sync of', db.length, 'mood entries to MySQL');
     let syncedCount = 0;
     
@@ -1901,22 +2050,20 @@ async function syncExistingMoodsToMySQL() {
         try {
           console.log('📤 Syncing entry:', entry);
           
-          // Create cycle entry for each mood/symptom
-          const cycleData = {
-            start_date: entry.date,
-            end_date: entry.date,
-            cycle_length: 28, // default
-            symptoms: JSON.stringify([entry.mood]),
-            mood: entry.category === "mood" ? entry.mood : "neutral",
-            notes: `Category: ${entry.category}`
+          // Save mood log to MySQL
+          const moodData = {
+            mood: entry.mood,
+            intensity: entry.intensity || 3,
+            notes: entry.notes || `Category: ${entry.category}`,
+            log_date: entry.date
           };
 
-          const response = await fetch('/api/cycles', {
+          const response = await fetch('/api/mood-logs', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(cycleData)
+            body: JSON.stringify(moodData)
           });
           
           console.log('📥 Sync response status:', response.status);
@@ -1938,7 +2085,7 @@ async function syncExistingMoodsToMySQL() {
     
     // Update localStorage with MySQL IDs
     if (syncedCount > 0) {
-      localStorage.setItem(MOOD_DB_KEY, JSON.stringify(db));
+      localStorage.setItem(USER_MOOD_DB_KEY, JSON.stringify(db));
       console.log(`✅ Successfully synced ${syncedCount} mood entries to MySQL`);
     } else {
       console.log('ℹ️ No new entries to sync to MySQL');
@@ -1967,44 +2114,48 @@ function formatTime(dateString) {
   });
 }
 
-// UPDATED: Save mood to MySQL using cycles table
+// UPDATED: Save mood to MySQL using mood-logs endpoint
+// UPDATED: Save mood to MySQL using mood-logs endpoint
 async function saveMood(date, mood, category = "mood") {
   try {
     console.log('📤 Sending mood to MySQL:', { date, mood, category });
     
-    // Prepare data for cycles table
-    const cycleData = {
-      start_date: date,
-      end_date: date,
-      cycle_length: 28, // default value
-      symptoms: JSON.stringify([mood]),
-      mood: category === "mood" ? mood : "neutral",
-      notes: `Category: ${category}`
+    // Prepare data for mood logs table
+    const moodData = {
+      mood: mood,
+      intensity: 3, // Default intensity
+      notes: `Category: ${category}`,
+      log_date: date
     };
 
-    const response = await fetch('/api/cycles', {
+    console.log('📤 Mood data being sent:', moodData);
+
+    const response = await fetch('/api/mood-logs', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(cycleData)
+      body: JSON.stringify(moodData)
     });
 
     console.log('📥 Response status:', response.status);
+    console.log('📥 Response headers:', response.headers);
     
     if (!response.ok) {
-      throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('❌ Server error response:', errorText);
+      throw new Error(`Server returned ${response.status}: ${errorText}`);
     }
     
     const result = await response.json();
     console.log('📥 Response data:', result);
     
     if (result.success) {
-      const db = JSON.parse(localStorage.getItem(MOOD_DB_KEY)) || [];
+      const db = JSON.parse(localStorage.getItem(USER_MOOD_DB_KEY)) || [];
       const now = new Date();
       const timestamp = now.toISOString();
       
-      const moodData = {
+      const moodEntry = {
         id: Date.now(),
         date: date,
         mood: mood,
@@ -2015,8 +2166,8 @@ async function saveMood(date, mood, category = "mood") {
         mysqlId: result.data.id
       };
       
-      db.push(moodData);
-      localStorage.setItem(MOOD_DB_KEY, JSON.stringify(db));
+      db.push(moodEntry);
+      localStorage.setItem(USER_MOOD_DB_KEY, JSON.stringify(db));
       
       if (mood === "Positive" && !isPregnant) {
         isPregnant = true;
@@ -2029,7 +2180,7 @@ async function saveMood(date, mood, category = "mood") {
       }
       
       updateLog();
-      console.log('✅ Mood saved successfully to MySQL');
+      console.log('✅ Mood saved successfully to MySQL and localStorage');
       return db;
     } else {
       console.error('❌ Failed to save mood to server:', result.message);
@@ -2037,13 +2188,17 @@ async function saveMood(date, mood, category = "mood") {
     }
   } catch (error) {
     console.error('💥 Error saving mood:', error);
+    console.error('💥 Error details:', {
+      message: error.message,
+      stack: error.stack
+    });
     alert('Error saving mood. Please check your connection and try again.');
   }
 }
 
 function showPregnancyCelebration() {
   document.querySelector('.dashboard-header h1').innerHTML = 
-    `<i class="fas fa-baby"></i> <%= username %>, Congratulations!`;
+    `<i class="fas fa-baby"></i> ${USER_NAME}, Congratulations!`;
   document.querySelector('.dashboard-header p').textContent = 
     'Welcome to your pregnancy journey! Track your progress below.';
   
@@ -2083,7 +2238,7 @@ function showPregnancyCelebration() {
 }
 
 function getMoodsGroupedByDate() {
-  const db = JSON.parse(localStorage.getItem(MOOD_DB_KEY)) || [];
+  const db = JSON.parse(localStorage.getItem(USER_MOOD_DB_KEY)) || [];
   const grouped = {};
   const sortedEntries = db.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   sortedEntries.forEach(entry => {
@@ -2094,31 +2249,51 @@ function getMoodsGroupedByDate() {
 }
 
 function deleteMoodEntry(id) {
-  const db = JSON.parse(localStorage.getItem(MOOD_DB_KEY)) || [];
+  const db = JSON.parse(localStorage.getItem(USER_MOOD_DB_KEY)) || [];
   const updatedDb = db.filter(entry => entry.id !== id);
-  localStorage.setItem(MOOD_DB_KEY, JSON.stringify(updatedDb));
+  localStorage.setItem(USER_MOOD_DB_KEY, JSON.stringify(updatedDb));
   updateLog();
 }
 
 function deleteMoodsForDate(date) {
-  const db = JSON.parse(localStorage.getItem(MOOD_DB_KEY)) || [];
+  const db = JSON.parse(localStorage.getItem(USER_MOOD_DB_KEY)) || [];
   const updatedDb = db.filter(entry => entry.date !== date);
-  localStorage.setItem(MOOD_DB_KEY, JSON.stringify(updatedDb));
+  localStorage.setItem(USER_MOOD_DB_KEY, JSON.stringify(updatedDb));
   updateLog();
 }
 
-function clearAllMoods() {
+async function clearAllMoods() {
   if (confirm("Are you sure you want to clear all your mood history?")) {
-    localStorage.setItem(MOOD_DB_KEY, JSON.stringify([]));
-    isPregnant = false;
-    pregnancyDueDate = null;
-    updateLog();
-    renderCalendar();
-    
-    document.querySelector('.dashboard-header h1').innerHTML = 
-      `<%= username %>, Welcome to Your Cycle Dashboard`;
-    document.querySelector('.dashboard-header p').textContent = 
-      'Track your period, fertility, and symptoms all in one place';
+    try {
+      // Clear from MySQL first
+      const response = await fetch('/api/mood-logs/clear-all', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.ok) {
+        // Then clear from localStorage
+        localStorage.setItem(USER_MOOD_DB_KEY, JSON.stringify([]));
+        isPregnant = false;
+        pregnancyDueDate = null;
+        updateLog();
+        renderCalendar();
+        
+        document.querySelector('.dashboard-header h1').innerHTML = 
+          `${USER_NAME}, Welcome to Your Cycle Dashboard`;
+        document.querySelector('.dashboard-header p').textContent = 
+          'Track your period, fertility, and symptoms all in one place';
+        
+        console.log('✅ All mood logs cleared from both MySQL and localStorage');
+      } else {
+        throw new Error('Failed to clear mood logs from server');
+      }
+    } catch (error) {
+      console.error('💥 Error clearing mood logs:', error);
+      alert('Error clearing mood logs. Please try again.');
+    }
   }
 }
 
@@ -2216,7 +2391,7 @@ moodButtons.forEach(button => {
 });
 
 clearBtn.addEventListener('click', clearAllMoods);
-  </script>
+ </script>
 </body>
 </html>
   

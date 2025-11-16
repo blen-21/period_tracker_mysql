@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BloomCycle | Private Doctor Chat</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<style>
+:root {
+    --primary: #e83f8e;
+    --primary-light: #ff8fab;
+    --primary-lighter: #ffc2d1;
+    --secondary: #9c4668;
+    --light: #fff9fb;
+    --white: #ffffff;
+    --text: #3a2e37;
+    --bloom: linear-gradient(135deg, #e83f8e, #ff8fab);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --success: #4CAF50;
+    --offline: #999;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { height: 100vh; overflow: hidden; display: flex; background: var(--light); }
+
+.doctors-sidebar {
+    width: 350px; background: var(--white); box-shadow: var(--shadow); padding: 20px; overflow-y: auto; flex-shrink: 0;
+    display: flex; flex-direction: column;
+}
+.doctors-list h3 { color: var(--primary); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--primary-lighter); font-size: 1.3rem; }
+
+.doctor-card { padding: 15px; border: 2px solid var(--primary-lighter); border-radius: 12px; margin-bottom: 15px; cursor: pointer; transition: all 0.3s ease; }
+.doctor-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow); }
+.doctor-card.active { border-color: var(--primary); background: var(--primary-lighter); }
+.doctor-name { font-weight: 600; color: var(--primary); font-size: 1.1rem; margin-bottom: 5px; }
+.doctor-specialty { font-size: 0.9rem; color: var(--secondary); margin-bottom: 8px; }
+.doctor-status { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; }
+.status-online { color: var(--success); }
+.status-offline { color: var(--offline); }
+
+.chat-area {
+    flex: 1; display: flex; flex-direction: column; background: var(--white); box-shadow: var(--shadow); overflow: hidden; min-width: 0;
+}
+.chat-header { height: 90px; background: var(--bloom); color: white; display: flex; align-items: center; gap: 15px; padding: 20px; flex-shrink: 0; }
+.doctor-avatar { width: 50px; height: 50px; border-radius: 50%; background: white; color: var(--primary); display: flex; justify-content: center; align-items: center; font-size: 1.5rem; flex-shrink: 0; }
+.chat-doctor-info { flex: 1; min-width: 0; }
+.chat-doctor-info h3 { font-size: 1.2rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-doctor-info p { font-size: 0.9rem; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
+
+.messages-container { flex: 1; padding: 20px; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column; gap: 15px; min-height: 0; }
+.message { max-width: 70%; padding: 12px 16px; border-radius: 18px; word-wrap: break-word; position: relative; }
+.message.user { align-self: flex-end; background: var(--bloom); color: white; border-bottom-right-radius: 5px; }
+.message.doctor { align-self: flex-start; background: var(--white); border: 1px solid var(--primary-lighter); border-bottom-left-radius: 5px; color: var(--text); }
+.message-time { font-size: 0.7rem; opacity: 0.7; margin-top: 5px; text-align: right; }
+
+.message-input-area { height: 80px; display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--primary-lighter); padding: 20px; flex-shrink: 0; }
+.message-input { flex: 1; height: 45px; border-radius: 25px; border: 2px solid var(--primary-lighter); padding: 0 15px; font-size: 1rem; outline: none; min-width: 0; }
+.message-input:focus { border-color: var(--primary); }
+.send-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--bloom); color: white; border: none; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; flex-shrink: 0; }
+.send-btn:hover { transform: scale(1.05); }
+
+.no-doctors { text-align: center; padding: 40px 20px; color: var(--secondary); }
+.no-doctors i { font-size: 3rem; margin-bottom: 15px; color: var(--primary-lighter); }
+
+/* New Styles for Doctor Selection */
+.tab-container { display: flex; margin-bottom: 20px; border-bottom: 2px solid var(--primary-lighter); }
+.tab { padding: 10px 20px; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease; }
+.tab.active { border-bottom-color: var(--primary); color: var(--primary); font-weight: 600; }
+.tab:hover { color: var(--primary); }
+
+.new-chat-section { margin-top: 20px; }
+.new-chat-section h4 { color: var(--primary); margin-bottom: 15px; font-size: 1.1rem; }
+
+.new-doctor-card { padding: 15px; border: 2px solid var(--primary-lighter); border-radius: 12px; margin-bottom: 15px; cursor: pointer; transition: all 0.3s ease; }
+.new-doctor-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow); background: var(--primary-lighter); }
+
+.start-chat-btn { width: 100%; padding: 12px; background: var(--bloom); color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; font-weight: 600; transition: all 0.3s ease; }
+.start-chat-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+.available-doctors-list { max-height: 400px; overflow-y: auto; }
+
+@media (max-width: 768px) {
+    body { flex-direction: column; }
+    .doctors-sidebar { width: 100%; max-height: 200px; }
+    .chat-header { height: 80px; padding: 15px; }
+    .doctor-avatar { width: 40px; height: 40px; font-size: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="doctors-sidebar">
+    <div class="tab-container">
+        <div class="tab active" onclick="showTab('existing')">My Conversations</div>
+        <div class="tab" onclick="showTab('new')">All Doctors</div>
+    </div>
+
+    <div class="doctors-list">
+        <!-- Existing Conversations Tab -->
+        <div id="existingTab">
+            <h3><i class="fas fa-comments"></i> My Doctors</h3>
+            <div id="existingConversations">
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading conversations...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Chat Tab -->
+        <div id="newTab" style="display: none;">
+            <h3><i class="fas fa-user-md"></i> All Doctors</h3>
+            <div class="new-chat-section">
+                <h4>Choose a Doctor to Chat With</h4>
+                <div class="available-doctors-list" id="availableDoctors">
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading all doctors...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="chat-area">
+    <div class="chat-header">
+        <div class="doctor-avatar"><i class="fas fa-user-md"></i></div>
+        <div class="chat-doctor-info">
+            <h3 id="chatDoctorName">Select a Doctor</h3>
+            <p id="chatDoctorSpec">Choose a doctor to start chatting</p>
+        </div>
+    </div>
+
+    <div class="messages-container" id="messagesContainer">
+        <div class="message doctor">
+            Welcome to BloomCycle Doctor Chat! Please select a doctor to start your consultation.
+            <div class="message-time"><%= new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %></div>
+        </div>
+    </div>
+
+    <div class="message-input-area">
+        <input id="messageInput" class="message-input" placeholder="Type your message..." disabled />
+        <button class="send-btn" onclick="sendMessage()" disabled>
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+let selectedDoctorId = "";
+let refreshInterval = null;
+let currentTab = 'existing';
+
+// Tab management
+function showTab(tabName) {
+    console.log('Switching to tab:', tabName);
+    currentTab = tabName;
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.getElementById('existingTab').style.display = tabName === 'existing' ? 'block' : 'none';
+    document.getElementById('newTab').style.display = tabName === 'new' ? 'block' : 'none';
+    
+    event.currentTarget.classList.add('active');
+    
+    if (tabName === 'new') {
+        console.log('Loading available doctors...');
+        loadAvailableDoctors();
+    }
+}
+
+// Load user's existing conversations
+async function loadExistingConversations() {
+    try {
+        console.log('Loading existing conversations...');
+        const response = await fetch('/api/chat/conversations');
+        const result = await response.json();
+        
+        console.log('Conversations response:', result);
+        
+        if (result.success) {
+            displayExistingConversations(result.data);
+        } else {
+            console.error('Failed to load conversations:', result.message);
+            showNoConversations();
+        }
+    } catch (error) {
+        console.error('Error loading conversations:', error);
+        showNoConversations();
+    }
+}
+
+function displayExistingConversations(conversations) {
+    const container = document.getElementById('existingConversations');
+    console.log('Displaying conversations:', conversations);
+    
+    if (conversations.length === 0) {
+        showNoConversations();
+        return;
+    }
+    
+    container.innerHTML = conversations.map(conv => `
+        <div class="doctor-card" onclick="selectDoctor('${conv.doctor_id}', '${conv.doctor_name.replace(/'/g, "\\'")}', '${conv.doctor_specialty.replace(/'/g, "\\'")}', this)">
+            <div class="doctor-name">${conv.doctor_name}</div>
+            <div class="doctor-specialty">${conv.doctor_specialty}</div>
+            <div class="doctor-status">
+                <i class="fas fa-circle status-online"></i> Online
+            </div>
+            <div class="text-muted small">Last message: ${new Date(conv.last_message_time).toLocaleDateString()}</div>
+        </div>
+    `).join('');
+}
+
+function showNoConversations() {
+    const container = document.getElementById('existingConversations');
+    container.innerHTML = `
+        <div class="no-doctors">
+            <i class="fas fa-comments"></i>
+            <p>No conversations yet</p>
+            <small>Start a new chat with a doctor from the "All Doctors" tab</small>
+        </div>
+    `;
+}
+
+// Load ALL available doctors from database
+async function loadAvailableDoctors() {
+    try {
+        console.log('Fetching available doctors from API...');
+        const response = await fetch('/api/chat/available-doctors');
+        const result = await response.json();
+        
+        console.log('Available doctors API response:', result);
+        
+        if (result.success) {
+            console.log('Doctors data received:', result.data);
+            displayAvailableDoctors(result.data);
+        } else {
+            console.error('API returned error:', result.message);
+            showNoAvailableDoctors();
+        }
+    } catch (error) {
+        console.error('Error loading available doctors:', error);
+        showNoAvailableDoctors();
+    }
+}
+
+function displayAvailableDoctors(doctors) {
+    const container = document.getElementById('availableDoctors');
+    console.log('Displaying doctors:', doctors);
+    
+    if (!doctors || doctors.length === 0) {
+        console.log('No doctors to display');
+        showNoAvailableDoctors();
+        return;
+    }
+    
+    container.innerHTML = doctors.map(doctor => {
+        const safeName = (doctor.name || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
+        const safeSpecialization = (doctor.specialization || 'General Medicine').replace(/'/g, "\\'").replace(/"/g, '\\"');
+        const displayName = safeName.startsWith('Dr. ') ? safeName : 'Dr. ' + safeName;
+        
+        return `
+        <div class="new-doctor-card" onclick="startNewChat('${doctor.id}', '${safeName}', '${safeSpecialization}')">
+            <div class="doctor-name">${displayName}</div>
+            <div class="doctor-specialty">${safeSpecialization}</div>
+            <div class="doctor-status">
+                <i class="fas fa-circle status-online"></i> Online • Available
+            </div>
+            <div class="text-muted small mt-2">Click to start a conversation</div>
+        </div>
+        `;
+    }).join('');
+    
+    console.log('Doctors displayed successfully');
+}
+
+function showNoAvailableDoctors() {
+    const container = document.getElementById('availableDoctors');
+    container.innerHTML = `
+        <div class="no-doctors">
+            <i class="fas fa-user-md"></i>
+            <p>No doctors available</p>
+            <small>Please check back later</small>
+        </div>
+    `;
+}
+
+// Start new chat with a doctor
+function startNewChat(doctorId, doctorName, doctorSpecialty) {
+    console.log('Starting new chat with doctor:', doctorId, doctorName);
+    selectDoctor(doctorId, doctorName, doctorSpecialty);
+    showTab('existing'); // Switch back to existing conversations tab
+    
+    // Show welcome message for new conversation
+    const container = document.getElementById('messagesContainer');
+    const displayName = doctorName.startsWith('Dr. ') ? doctorName : 'Dr. ' + doctorName;
+    container.innerHTML = `
+        <div class="message doctor">
+            Hello! I'm ${displayName}. How can I help you today?
+            <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        </div>
+    `;
+}
+
+// Select doctor function
+function selectDoctor(doctorId, doctorName, doctorSpecialty, el) {
+    console.log('Selecting doctor:', doctorId, doctorName);
+    
+    // Update UI
+    document.querySelectorAll('.doctor-card').forEach(card => card.classList.remove('active'));
+    if (el) el.classList.add('active');
+
+    const displayName = doctorName && doctorName.startsWith('Dr. ') ? doctorName : `Dr. ${doctorName}`;
+    document.getElementById('chatDoctorName').textContent = displayName;
+    document.getElementById('chatDoctorSpec').textContent = doctorSpecialty;
+    selectedDoctorId = doctorId;
+
+    // Enable input and start auto-refresh
+    const msgInput = document.getElementById('messageInput');
+    const sendBtn = document.querySelector('.send-btn');
+    msgInput.disabled = false;
+    sendBtn.disabled = false;
+    msgInput.placeholder = "Type your message...";
+    msgInput.focus();
+    
+    // Load existing messages
+    loadMessages(doctorId);
+    
+    // Start auto-refresh
+    if (refreshInterval) clearInterval(refreshInterval);
+    refreshInterval = setInterval(() => loadMessages(doctorId), 3000);
+}
+
+// Load and display messages
+async function loadMessages(doctorId) {
+    try {
+        const response = await fetch(`/api/chat/messages/${doctorId}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            displayMessages(result.data);
+        }
+    } catch (error) {
+        console.error('Error loading messages:', error);
+    }
+}
+
+function displayMessages(messages) {
+    const container = document.getElementById('messagesContainer');
+    
+    if (messages.length === 0) {
+        // Don't show welcome message if we're in an existing conversation
+        if (currentTab === 'existing') {
+            const doctorName = document.getElementById('chatDoctorName').textContent;
+            container.innerHTML = `
+                <div class="message doctor">
+                    Hello! I'm ${doctorName}. How can I help you today?
+                    <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                </div>
+            `;
+        }
+        return;
+    }
+    
+    container.innerHTML = messages.map(msg => `
+        <div class="message ${msg.sender_type === 'user' ? 'user' : 'doctor'}">
+            <div>${msg.message}</div>
+            <div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        </div>
+    `).join('');
+    
+    container.scrollTop = container.scrollHeight;
+}
+
+// Send message function
+async function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const message = input.value.trim();
+    
+    if (!message || !selectedDoctorId) return;
+
+    try {
+        const response = await fetch('/api/chat/send-message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                doctor_id: selectedDoctorId,
+                message: message
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            input.value = '';
+            await loadMessages(selectedDoctorId);
+            await loadExistingConversations(); // Refresh conversation list
+        }
+    } catch (error) {
+        console.error('Error sending message:', error);
+        alert('Error sending message. Please try again.');
+    }
+}
+
+// Event listeners
+document.getElementById('messageInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') sendMessage();
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Chat page loaded');
+    loadExistingConversations();
+});
+
+// Add manual test function
+function testAvailableDoctors() {
+    console.log('Manually testing available doctors...');
+    loadAvailableDoctors();
+}
+</script>
+</body>
+</html>
